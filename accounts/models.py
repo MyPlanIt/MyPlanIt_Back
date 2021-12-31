@@ -1,33 +1,29 @@
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from multiselectfield import MultiSelectField
 from django.db import models
 
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, username, password, email):
-
-        if not username:
-            raise ValueError('must have username')
-        if not email:
-            raise ValueError('must have user email')
-        if not password:
-            raise ValueError('must have user password')
+    def create_user(self, email, password, realname, phone_num, nickname):
 
         user = self.model(
-            username=username,
-            email=self.normalize_email(email),
+            email = email,
+            realname = realname,
+            phone_num = phone_num,
+            nickname = nickname,
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, password=None, email=None, **extra_fields):
+    def create_superuser(self, email=None, password=None, nickname=None, **extra_fields):
         superuser = self.create_user(
-            username = username,
             email = email,
             password = password,
+            nickname = nickname,
         )
 
         superuser.is_staff = True
@@ -38,32 +34,23 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    email = models.EmailField(
-        verbose_name='Email address',
-        max_length=255,
-        unique=True,
-    )
-
-    username = models.CharField(
-        verbose_name='Username',
-        max_length=50,
-        unique=True
-    )
-
-    phone_number = models.CharField(
-        verbose_name='Phone number',
-        max_length=11,
-        unique=True
-    )
-
+    email = models.EmailField(max_length=30)
+    realname = models.CharField(max_length=30)
+    phone_num = models.CharField(max_length=11)
+    auth_num =  models.CharField(max_length=10, null=True, blank=True)
+    email_agree = models.BooleanField(default=False)
+    sns_agree = models.BooleanField(default=False)
+    nickname = models.CharField(max_length=20)
+    # jobs =
+    # interests =
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['password', 'email']
+    USERNAME_FIELD = 'id'
+    REQUIRED_FIELDS = ['password', 'email', 'realname', 'phone_num', 'nickname']
 
     class Meta:
         managed = True
@@ -77,4 +64,4 @@ class User(AbstractBaseUser):
         return self.is_superuser
 
     def __str__(self):
-        return self.username
+        return self.nickname

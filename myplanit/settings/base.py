@@ -32,7 +32,6 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'auth.User'
 
 # Application definition
 
@@ -49,6 +48,7 @@ INSTALLED_APPS = [
     'multiselectfield',
     'rest_framework_simplejwt',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

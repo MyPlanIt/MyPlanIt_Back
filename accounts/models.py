@@ -7,23 +7,25 @@ from django.db import models
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, email, password, realname, phone_num, nickname):
+    def create_user(self, email, password, realname, phone_num, username):
 
         user = self.model(
             email = email,
             realname = realname,
             phone_num = phone_num,
-            nickname = nickname,
+            username = username,
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email=None, password=None, nickname=None, **extra_fields):
+    def create_superuser(self, email=None, password=None, realname=None, phone_num=None, username=None, **extra_fields):
         superuser = self.create_user(
             email = email,
+            realname = realname,
+            phone_num = phone_num,
             password = password,
-            nickname = nickname,
+            username = username,
         )
 
         superuser.is_staff = True
@@ -40,7 +42,7 @@ class User(AbstractBaseUser):
     auth_num =  models.CharField(max_length=10, null=True, blank=True)
     email_agree = models.BooleanField(default=False)
     sns_agree = models.BooleanField(default=False)
-    nickname = models.CharField(max_length=20)
+    username = models.CharField(max_length=20)
     # jobs =
     # interests =
     is_superuser = models.BooleanField(default=False)
@@ -50,7 +52,7 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     USERNAME_FIELD = 'id'
-    REQUIRED_FIELDS = ['password', 'email', 'realname', 'phone_num', 'nickname']
+    REQUIRED_FIELDS = ['password', 'email', 'realname', 'phone_num', 'username']
 
     class Meta:
         managed = True
@@ -64,4 +66,4 @@ class User(AbstractBaseUser):
         return self.is_superuser
 
     def __str__(self):
-        return self.nickname
+        return self.username

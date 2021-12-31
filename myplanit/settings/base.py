@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 import environ
 import pymysql
+import datetime
 
 pymysql.install_as_MySQLdb()
 
@@ -45,6 +46,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'accounts',
+    'multiselectfield',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -125,3 +128,20 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # corsheaders
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+
+# simple_JWT 추가
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+# JWT 세팅
+SIMPLE_JWT = {
+    # access token 유효기간 하루로 설정
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(days=1),
+    # refresh token 유효기간 7일로 설정
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=7),
+    # Authorization 헤더에 JWT ~~ 형식으로 입력
+    "AUTH_HEADER_TYPES": ("JWT",),
+}

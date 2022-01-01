@@ -4,6 +4,19 @@ from multiselectfield import MultiSelectField
 from django.db import models
 
 
+JOB_CHOICES = ((1, '대학생'),
+               (2, '취준생'),
+               (3, '주니어 직장인'),
+               (4, '시니어 직장인'))
+
+INTEREST_CHOICES = ((1, '운동 & 건강'),
+                    (2, '자격증'),
+                    (3, '코딩 공부'),
+                    (4, '디자인'),
+                    (5, '관심분야1'),
+                    (6, '관심분야2'))
+
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -36,15 +49,14 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    email = models.EmailField(max_length=30)
+    email = models.EmailField(max_length=30, unique=True)
     realname = models.CharField(max_length=30)
     phone_num = models.CharField(max_length=11)
-    auth_num =  models.CharField(max_length=10, null=True, blank=True)
     email_agree = models.BooleanField(default=False)
     sns_agree = models.BooleanField(default=False)
-    username = models.CharField(max_length=20)
-    # jobs =
-    # interests =
+    username = models.CharField(max_length=20, unique=True) # 닉네임
+    #jobs = MultiSelectField(choices=JOB_CHOICES, max_choices=4, default=0)
+    #interests = MultiSelectField(choices=INTEREST_CHOICES, max_choices=6, default=0)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

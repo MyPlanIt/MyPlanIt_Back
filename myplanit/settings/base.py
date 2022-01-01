@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'accounts',
     'multiselectfield',
     'rest_framework_simplejwt',
+    'todo',
 ]
 
 

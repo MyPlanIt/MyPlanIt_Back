@@ -1,13 +1,12 @@
-#FROM python:3.8.3-alpine
-FROM python:3.8-slim-buster
+FROM python:3.8.3-alpine
 ENV PYTHONUNBUFFERED 1
 
 RUN mkdir /app
 WORKDIR /app
 
 # dependencies for psycopg2-binary
-# RUN apk add --no-cache mariadb-connector-c-dev
-# RUN apk update && apk add python3 python3-dev mariadb-dev build-base && pip3 install mysqlclient
+RUN apk add --no-cache mariadb-connector-c-dev
+RUN apk update && apk add python3 python3-dev mariadb-dev build-base && pip3 install mysqlclient
 
 
 # By copying over requirements first, we make sure that Docker will cache

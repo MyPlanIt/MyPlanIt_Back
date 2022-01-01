@@ -1,7 +1,5 @@
 asgiref==3.4.1
 bcrypt==3.2.0
-cffi==1.15.0
-cryptography==36.0.1
 Django==3.1.14
 django-cors-headers==3.10.1
 django-environ==0.8.1

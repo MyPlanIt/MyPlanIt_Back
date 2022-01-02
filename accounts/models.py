@@ -3,7 +3,6 @@ from django.contrib.auth.models import PermissionsMixin
 from multiselectfield import MultiSelectField
 from django.db import models
 
-
 JOB_CHOICES = ((1, '대학생'),
                (2, '취준생'),
                (3, '주니어 직장인'),
@@ -21,12 +20,11 @@ class UserManager(BaseUserManager):
     use_in_migrations = True
 
     def create_user(self, email, password, realname, phone_num, username):
-
         user = self.model(
-            email = email,
-            realname = realname,
-            phone_num = phone_num,
-            username = username,
+            email=email,
+            realname=realname,
+            phone_num=phone_num,
+            username=username,
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -34,11 +32,11 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email=None, password=None, realname=None, phone_num=None, username=None, **extra_fields):
         superuser = self.create_user(
-            email = email,
-            realname = realname,
-            phone_num = phone_num,
-            password = password,
-            username = username,
+            email=email,
+            realname=realname,
+            phone_num=phone_num,
+            password=password,
+            username=username,
         )
 
         superuser.is_staff = True
@@ -54,9 +52,9 @@ class User(AbstractBaseUser):
     phone_num = models.CharField(max_length=11)
     email_agree = models.BooleanField(default=False)
     sns_agree = models.BooleanField(default=False)
-    username = models.CharField(max_length=20, unique=True) # 닉네임
-    #jobs = MultiSelectField(choices=JOB_CHOICES, max_choices=4, default=0)
-    #interests = MultiSelectField(choices=INTEREST_CHOICES, max_choices=6, default=0)
+    username = models.CharField(max_length=20, unique=True)  # 닉네임
+    # jobs = MultiSelectField(choices=JOB_CHOICES, max_choices=4, default=0)
+    # interests = MultiSelectField(choices=INTEREST_CHOICES, max_choices=6, default=0)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

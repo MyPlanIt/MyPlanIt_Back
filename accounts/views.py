@@ -7,21 +7,11 @@ from rest_framework.parsers import JSONParser
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from django.contrib.auth.hashers import check_password
+
+from myplanit.settings import env
 from .models import User
-from .serializers import SignupSerializer, UserSeriallizer
-import os, environ
+from .serializers import SignupSerializer, UserSerializer
 import jwt
-
-# .env 파일 가져오기
-BASE_DIR = os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__))))
-env = environ.Env(
-    DEBUG=(bool, False)
-)
-
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
-# Create your views here.
 
 
 def get_user(pk):
@@ -48,7 +38,7 @@ class LoginView(APIView):
             payload = jwt.decode(access_token, env('DJANGO_SECRET_KEY'), algorithms=['HS256'])
             pk = payload.get('user_id')
             user = get_user(pk)
-            serializer = UserSeriallizer(user)
+            serializer = UserSerializer(user)
             response = Response(
                 serializer.data,
                 status=status.HTTP_200_OK
@@ -65,7 +55,7 @@ class LoginView(APIView):
                 payload = jwt.decode(access_token, env('DJANGO_SECRET_KEY'), algorithms=['HS256'])
                 pk = payload.get('user_id')
                 user = get_user(pk)
-                serializer = UserSeriallizer(instance=user)
+                serializer = UserSerializer(instance=user)
                 response = Response(serializer.data, status=status.HTTP_200_OK)
                 response.set_cookie('access_token', access_token)
                 response.set_cookie('refresh_token', refresh_token)
@@ -94,7 +84,7 @@ class LoginView(APIView):
             access_token = str(token.access_token)
             response = Response(
                 {
-                    "user": UserSeriallizer(user).data,
+                    "user": UserSerializer(user).data,
                     "message": "login success",
                     "token": {
                         "access_token": access_token,

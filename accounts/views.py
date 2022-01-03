@@ -37,8 +37,8 @@ def get_user(pk):
 # 회원가입
 class SignupView(APIView):
     def post(self, request):
-        data = JSONParser().parse(request)
-        serializer = SignupSerializer(data=data)
+        #data = JSONParser().parse(request)
+        serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

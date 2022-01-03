@@ -26,7 +26,7 @@ services:
     volumes:
       - static:/home/app/web/static
       - media:/home/app/web/media
-      - /etc/letsencrypt/archive/myplanit.cf:/etc/nginx/conf.d/certificate
+      - ./config/nginx/:/etc/nginx/conf.d/
     ports:
       - "80:80"
       - "443:443"

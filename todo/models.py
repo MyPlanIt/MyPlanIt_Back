@@ -11,7 +11,7 @@ class TimeStampedModel(models.Model):
 class Personal_todo(TimeStampedModel):
     user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='personal_todo')
     todo_name = models.CharField(max_length=50)
-    date = models.DateTimeField()
+    date = models.DateField()
     tag = models.CharField(max_length=20)
     finish_flag = models.BooleanField(default=False)
 

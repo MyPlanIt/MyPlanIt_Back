@@ -1,7 +1,8 @@
-from rest_framework import serializers
+from rest_framework import serializers, fields
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.settings import api_settings
+from .models import JOB_CHOICES
 
 from .models import User
 
@@ -32,3 +33,9 @@ class UserSeriallizer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'email', 'realname', 'username']
+
+
+class OnbordingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['jobs']

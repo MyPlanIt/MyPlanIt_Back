@@ -55,8 +55,8 @@ class User(AbstractBaseUser):
     email_agree = models.BooleanField(default=False)
     sns_agree = models.BooleanField(default=False)
     username = models.CharField(max_length=20, unique=True) # 닉네임
-    #jobs = MultiSelectField(choices=JOB_CHOICES, max_choices=4, default=0)
-    #interests = MultiSelectField(choices=INTEREST_CHOICES, max_choices=6, default=0)
+    #jobs = MultiSelectField(choices=JOB_CHOICES, max_choices=4, min_choices=0, null=True, blank=True)
+    #interests = MultiSelectField(choices=INTEREST_CHOICES, max_choices=6, min_choices=0, null=True, blank=True)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

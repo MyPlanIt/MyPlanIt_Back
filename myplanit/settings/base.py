@@ -146,3 +146,18 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("JWT",),
 }
 
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://localhost:3000",
+    "http://localhost",
+    "https://localhost:3000",
+    "https://127.0.0.1:3000",
+    "https://0.0.0.0:3000",
+    "http://my-plan-it-front.vercel.app",
+    "https://my-plan-it-front.vercel.app"
+]
+
+CORS_ALLOW_CREDENTIALS = True
+

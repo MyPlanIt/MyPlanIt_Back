@@ -146,3 +146,4 @@ SIMPLE_JWT = {
     # Authorization 헤더에 JWT ~~ 형식으로 입력
     "AUTH_HEADER_TYPES": ("JWT",),
 }
+

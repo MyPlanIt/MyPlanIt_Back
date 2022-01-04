@@ -21,11 +21,17 @@ def get_user(pk):
 # 회원가입
 class SignupView(APIView):
     def post(self, request):
-        data = JSONParser().parse(request)
-        serializer = SignupSerializer(data=data)
+        serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            user = serializer.save()
+            # 회원가입 이후 첫 토큰 발행
+            token = TokenObtainPairSerializer.get_token(user)
+            refresh_token = str(token)
+            access_token = str(token.access_token)
+            response = Response(serializer.data, status=status.HTTP_201_CREATED)
+            response.set_cookie('access_token', access_token)
+            response.set_cookie('refresh_token', refresh_token)
+            return response
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -100,3 +106,40 @@ class LoginView(APIView):
             return Response(
                 {"message": "Invalid User"}, status=status.HTTP_400_BAD_REQUEST
             )
+
+
+# 온보딩
+class OnboardingView(APIView):
+    def post(self, request):
+        jobs = request.data.get('jobs')
+        interests = request.data.get('interests')
+        try:
+            access_token = request.COOKIES['access_token']
+            payload = jwt.decode(access_token, env('DJANGO_SECRET_KEY'), algorithms=['HS256'])
+            pk = payload.get('user_id')
+            user = get_user(pk)
+            print(user)
+
+        # 토큰 만료시 토큰 갱신
+        except(jwt.exceptions.ExpiredSignatureError):
+            data = {'refresh': request.COOKIES.get('refresh_token', None)}
+            serializer = TokenRefreshSerializer(data=data)
+            if serializer.is_valid(raise_exception=True):
+                access_token = serializer.data.get('access', None)
+                refresh_token = serializer.data.get('refresh', None)
+                payload = jwt.decode(access_token, env('DJANGO_SECRET_KEY'), algorithms=['HS256'])
+                pk = payload.get('user_id')
+                user = get_user(pk)
+                response = Response(status=status.HTTP_200_OK)
+                response.set_cookie('access_token', access_token)
+                response.set_cookie('refresh_token', refresh_token)
+            else:
+                raise jwt.exceptions.InvalidTokenError
+
+        except(jwt.exceptions.InvalidTokenError):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        user.jobs = jobs
+        user.interests = interests
+        user.save()
+        return Response({"message": "응답완료"}, status=status.HTTP_200_OK)

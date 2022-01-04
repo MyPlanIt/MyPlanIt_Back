@@ -1,2 +1,2 @@
 # Milimate_Back
-init
+되라고 ㅈ좀

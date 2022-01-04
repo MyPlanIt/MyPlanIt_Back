@@ -30,7 +30,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('DJANGO_SECRET_KEY')
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['myplanit.link']
+ALLOWED_HOSTS = [
+    '.ap-northeast-2.compute.amazonaws.com'
+    ,'.myplanit.link']
 
 
 # Application definition

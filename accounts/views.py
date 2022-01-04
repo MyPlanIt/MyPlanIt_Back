@@ -24,12 +24,6 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # Create your views here.
 
 
-## 토큰 예시 ##
-
-
-## 토큰 끝 ##
-
-
 def get_user(pk):
     return get_object_or_404(User, pk=pk)
 
@@ -37,11 +31,17 @@ def get_user(pk):
 # 회원가입
 class SignupView(APIView):
     def post(self, request):
-        #data = JSONParser().parse(request)
         serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            user = serializer.save()
+            # 회원가입 이후 첫 토큰 발행
+            token = TokenObtainPairSerializer.get_token(user)
+            refresh_token = str(token)
+            access_token = str(token.access_token)
+            response = Response(serializer.data, status=status.HTTP_201_CREATED)
+            response.set_cookie('access_token', access_token)
+            response.set_cookie('refresh_token', refresh_token)
+            return response
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

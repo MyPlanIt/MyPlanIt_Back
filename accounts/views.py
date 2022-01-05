@@ -7,19 +7,12 @@ from rest_framework.parsers import JSONParser
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from django.contrib.auth.hashers import check_password
+
+from myplanit.settings import env
 from .models import User
-from .serializers import SignupSerializer, UserSeriallizer, OnbordingSerializer
-import os, environ
+from .serializers import SignupSerializer, UserSeriallizer
 import jwt
 
-# .env 파일 가져오기
-BASE_DIR = os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__))))
-env = environ.Env(
-    DEBUG=(bool, False)
-)
-
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Create your views here.
 

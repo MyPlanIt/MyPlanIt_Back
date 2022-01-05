@@ -20,13 +20,15 @@ INTEREST_CHOICES = ((1, '운동 & 건강'),
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, email, password, realname, phone_num, username):
+    def create_user(self, email, password, realname, phone_num, username, email_agree, sns_agree):
 
         user = self.model(
             email = email,
             realname = realname,
             phone_num = phone_num,
             username = username,
+            email_agree = email_agree,
+            sns_agree = sns_agree
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -64,7 +66,7 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     USERNAME_FIELD = 'id'
-    REQUIRED_FIELDS = ['password', 'email', 'realname', 'phone_num', 'username']
+    REQUIRED_FIELDS = ['password', 'email', 'realname', 'phone_num', 'username', 'email_agree', 'sns_agree']
 
     class Meta:
         managed = True

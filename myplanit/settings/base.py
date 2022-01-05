@@ -176,3 +176,18 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': datetime.timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': datetime.timedelta(days=1),
 }
+
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://localhost:3000",
+    "http://localhost",
+    "https://localhost:3000",
+    "https://127.0.0.1:3000",
+    "https://0.0.0.0:3000",
+    "http://my-plan-it-front.vercel.app",
+    "https://my-plan-it-front.vercel.app"
+]
+
+CORS_ALLOW_CREDENTIALS = True

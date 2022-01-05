@@ -32,8 +32,7 @@ def get_token(request):
 
     # 토큰 만료시 토큰 갱신
     except(jwt.exceptions.ExpiredSignatureError):
-        data = {'refresh': request.COOKIES.get('refresh_token', None)}
-        serializer = TokenRefreshSerializer(data=data)
+        serializer = TokenRefreshSerializer(data=request.COOKIES.get('refresh_token', None))
         if serializer.is_valid(raise_exception=True):
             access_token = serializer.data.get('access', None)
             refresh_token = serializer.data.get('refresh', None)
@@ -83,8 +82,7 @@ class LoginView(APIView):
 
         # 토큰 만료시 토큰 갱신
         except(jwt.exceptions.ExpiredSignatureError):
-            data = {'refresh': request.COOKIES.get('refresh_token', None)}
-            serializer = TokenRefreshSerializer(data=data)
+            serializer = TokenRefreshSerializer(data=request.COOKIES.get('refresh_token', None))
             if serializer.is_valid(raise_exception=True):
                 access_token = serializer.data.get('access', None)
                 refresh_token = serializer.data.get('refresh', None)

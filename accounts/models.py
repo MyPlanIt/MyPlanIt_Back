@@ -20,12 +20,11 @@ INTEREST_CHOICES = ((1, '운동 & 건강'),
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, email, password, realname, phone_num, username, email_agree, sns_agree):
+    def create_user(self, email, password, realname, username, email_agree, sns_agree):
 
         user = self.model(
             email = email,
             realname = realname,
-            phone_num = phone_num,
             username = username,
             email_agree = email_agree,
             sns_agree = sns_agree
@@ -34,11 +33,10 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email=None, password=None, realname=None, phone_num=None, username=None, **extra_fields):
+    def create_superuser(self, email=None, password=None, realname=None, username=None, **extra_fields):
         superuser = self.create_user(
             email = email,
             realname = realname,
-            phone_num = phone_num,
             password = password,
             username = username,
         )
@@ -53,7 +51,6 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
     email = models.EmailField(max_length=30, unique=True)
     realname = models.CharField(max_length=30)
-    phone_num = models.CharField(max_length=11)
     email_agree = models.BooleanField(default=False)
     sns_agree = models.BooleanField(default=False)
     username = models.CharField(max_length=20, unique=True) # 닉네임
@@ -66,7 +63,7 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     USERNAME_FIELD = 'id'
-    REQUIRED_FIELDS = ['password', 'email', 'realname', 'phone_num', 'username', 'email_agree', 'sns_agree']
+    REQUIRED_FIELDS = ['password', 'email', 'realname', 'username', 'email_agree', 'sns_agree']
 
     class Meta:
         managed = True

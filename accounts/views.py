@@ -1,10 +1,8 @@
 import jwt.exceptions
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.parsers import JSONParser
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from django.contrib.auth.hashers import check_password
 
@@ -12,9 +10,6 @@ from myplanit.settings import env
 from .models import User
 from .serializers import SignupSerializer, UserSeriallizer
 import jwt
-
-
-# Create your views here.
 
 
 def get_user(pk):

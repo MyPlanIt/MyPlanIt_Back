@@ -1,9 +1,4 @@
-from rest_framework import serializers, fields
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.settings import api_settings
-from .models import JOB_CHOICES
-
+from rest_framework import serializers
 from .models import User
 
 

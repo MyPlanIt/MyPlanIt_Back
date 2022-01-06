@@ -3,8 +3,7 @@ from taggit.managers import TaggableManager
 from taggit.managers import TaggableManager
 from taggit.models import TagBase, GenericTaggedItemBase
 from taggit.models import TagBase, TaggedItemBase
-from django.apps import apps
-User = apps.get_model('accounts', 'User')
+from accounts.models import User
 
 # Create your models here.
 

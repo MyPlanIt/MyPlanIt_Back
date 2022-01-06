@@ -1,11 +1,4 @@
 from django.contrib import admin
-from taggit.models import (
-    TagBase, TaggedItemBase
-)
-
-# Register your models here.
-
-from django.contrib import admin
 from .models import Plan
 
 

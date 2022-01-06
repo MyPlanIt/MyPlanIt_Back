@@ -10,13 +10,12 @@ from .models import User
 class SignupSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'password', 'realname', 'phone_num', 'username', 'email_agree', 'sns_agree']
+        fields = ['email', 'password', 'realname', 'username', 'email_agree', 'sns_agree']
 
     def create(self, validated_data):
         email = validated_data.get('email')
         password = validated_data.get('password')
         realname = validated_data.get('realname')
-        phone_num = validated_data.get('phone_num')
         username = validated_data.get('username')
         email_agree = validated_data.get('email_agree')
         sns_agree = validated_data.get('sns_agree')
@@ -29,7 +28,6 @@ class SignupSerializer(serializers.ModelSerializer):
         user = User(
             email = email,
             realname = realname,
-            phone_num = phone_num,
             username = username,
             email_agree = email_agree,
             sns_agree = sns_agree

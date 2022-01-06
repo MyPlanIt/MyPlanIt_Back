@@ -1,8 +1,13 @@
 asgiref==3.4.1
+cffi==1.15.0
+cryptography==36.0.1
 Django==3.1.14
 django-cors-headers==3.10.1
 django-environ==0.8.1
 django-multiselectfield==0.1.12
+django-taggit==2.0.0
+django-taggit-templatetags==0.2.5
+django-templatetag-sugar==1.0
 djangorestframework==3.12.4
 djangorestframework-simplejwt==5.0.0
 gunicorn==20.0.4

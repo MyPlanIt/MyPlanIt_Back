@@ -5,7 +5,7 @@ from .models import Plan, Plan_todo, Plan_todo_video, User_Plan, User_plan_todo
 @admin.register(Plan)
 class PlanAdmin(admin.ModelAdmin):
     filter_horizontal = ['tags']
-    list_display = ['id', 'category', 'name1', 'tag_list']
+    list_display = ['id', 'category', 'name', 'tag_list']
 
     def get_queryset(self, request):
         return super().get_queryset(request).prefetch_related('tags')

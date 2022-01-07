@@ -13,8 +13,7 @@ CATEGORY_CHOICES = (('Routine', 'Routine'),
 class Plan(models.Model):
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=30) # 루틴 / 성장
     main_img_url = models.URLField()
-    name1 = models.CharField(max_length=30)
-    name2 = models.CharField(max_length=30, blank=True, null=True)
+    name = models.CharField(max_length=30)
     price = models.PositiveIntegerField(default=0)
     writer_name = models.CharField(max_length=20)
     writer_img = models.URLField(blank=True, null=True)

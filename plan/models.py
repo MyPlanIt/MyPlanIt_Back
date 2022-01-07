@@ -12,17 +12,19 @@ CATEGORY_CHOICES = (('Routine', 'Routine'),
 
 class Plan(models.Model):
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=30) # 루틴 / 성장
-    category_detail = models.CharField(max_length=30)
     main_img_url = models.URLField()
-    name = models.CharField(max_length=30)
-    period = models.IntegerField()
+    name1 = models.CharField(max_length=30)
+    name2 = models.CharField(max_length=30, blank=True, null=True)
     price = models.PositiveIntegerField(default=0)
-    plan_writer = models.CharField(max_length=20)
-    intro_img_url = models.URLField()
-    tags = TaggableManager(blank=True)
+    writer_name = models.CharField(max_length=20)
+    writer_img = models.URLField()
+    writer_intro = models.CharField(max_length=30)
+    intro_img_url = models.URLField() # 플랜 클릭 시 보여줘야 할 이미지파일
+    desc = models.TextField()
+    tags = TaggableManager(blank=True) # 태그
 
     def __str__(self):
-        return self.name
+        return self.name1
 
 
 class Plan_todo(models.Model):

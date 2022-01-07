@@ -47,7 +47,7 @@ class Plan_todo_video(models.Model):
 class User_Plan(models.Model):
     wish_flag = models.BooleanField(default=False) # 찜하기
     register_flag = models.BooleanField(default=False) # 등록
-    own_flag = models.BooleanField(default=True) # 소유
+    own_flag = models.BooleanField(default=False) # 소유
     finish_flag = models.BooleanField(default=False)
 
     user = models.ForeignKey(User, related_name='users', on_delete=models.CASCADE)

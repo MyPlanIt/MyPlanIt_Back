@@ -4,6 +4,7 @@ cryptography==36.0.1
 Django==3.1.14
 django-cors-headers==3.10.1
 django-environ==0.8.1
+django-filter==21.1
 django-multiselectfield==0.1.12
 django-taggit==2.0.0
 django-taggit-templatetags==0.2.5

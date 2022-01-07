@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from django.contrib.auth.hashers import check_password
+from django.http import JsonResponse
 
 from myplanit.settings import env
 from .models import User
@@ -30,7 +31,7 @@ class SignupView(APIView):
             response.set_cookie('access_token', access_token)
             response.set_cookie('refresh_token', refresh_token)
             return response
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) # 회원가입 에러인 경우(email, username 검증에서 탈락 시)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST) # 회원가입 에러인 경우(email, username 검증에서 탈락 시)
 
 
 # 로그인
@@ -70,12 +71,12 @@ class LoginView(APIView):
                     return response
             except(rest_framework_simplejwt.exceptions.TokenError):
                 print("refresh토큰도 만료")
-                return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_200_OK)
+                return JsonResponse({"message": "로그인이 만료되었습니다."}, status=status.HTTP_200_OK)
 
             raise jwt.exceptions.InvalidTokenError
 
         except(jwt.exceptions.InvalidTokenError):
-            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_200_OK)
+            return JsonResponse({"message": "로그인이 만료되었습니다."}, status=status.HTTP_200_OK)
 
     # 로그인 : access, refresh 토큰 생성
     def post(self, request):
@@ -85,12 +86,12 @@ class LoginView(APIView):
         user = User.objects.filter(email=email).first()
 
         if user is None: # 해당 email의 user가 존재하지 않는 경우
-            return Response(
+            return JsonResponse(
                 {"message": "존재하지않는 email입니다."}, status=status.HTTP_400_BAD_REQUEST
             )
 
         if not check_password(password, user.password): # 비밀번호에서 틀린 경우
-            return Response(
+            return JsonResponse(
                 {"message": "비밀번호가 틀렸습니다."}, status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -113,7 +114,7 @@ class LoginView(APIView):
             response.set_cookie("refresh_token", refresh_token, httponly=True)
             return response
         else: # 그 외
-            return Response(
+            return JsonResponse(
                 {"message": "로그인에 실패하였습니다"}, status=status.HTTP_400_BAD_REQUEST
             )
 

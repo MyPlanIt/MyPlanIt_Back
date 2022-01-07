@@ -31,7 +31,7 @@ class SignupView(APIView):
             response.set_cookie('access_token', access_token)
             response.set_cookie('refresh_token', refresh_token)
             return response
-        return Response(serializer.errors, status=status.HTTP_302_FOUND) # 회원가입 에러인 경우(email, username 검증에서 탈락 시)
+        return Response(serializer.errors, status=status.HTTP_200_OK) # 회원가입 에러인 경우(email, username 검증에서 탈락 시)
 
 
 # 로그인
@@ -71,12 +71,12 @@ class LoginView(APIView):
                     return response
             except(rest_framework_simplejwt.exceptions.TokenError):
                 print("refresh토큰도 만료")
-                return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_302_FOUND)
+                return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
             raise jwt.exceptions.InvalidTokenError
 
         except(jwt.exceptions.InvalidTokenError):
-            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_302_FOUND)
+            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
     # 로그인 : access, refresh 토큰 생성
     def post(self, request):
@@ -87,12 +87,12 @@ class LoginView(APIView):
 
         if user is None: # 해당 email의 user가 존재하지 않는 경우
             return Response(
-                {"message": "존재하지않는 email입니다."}, status=status.HTTP_302_FOUND
+                {"message": "존재하지않는 email입니다."}, status=status.HTTP_400_BAD_REQUEST
             )
 
         if not check_password(password, user.password): # 비밀번호에서 틀린 경우
             return Response(
-                {"message": "비밀번호가 틀렸습니다."}, status=status.HTTP_302_FOUND
+                {"message": "비밀번호가 틀렸습니다."}, status=status.HTTP_401_UNAUTHORIZED
             )
 
         if user is not None: # 모두 성공 시
@@ -115,7 +115,7 @@ class LoginView(APIView):
             return response
         else: # 그 외
             return Response(
-                {"message": "로그인에 실패하였습니다"}, status=status.HTTP_302_FOUND
+                data={"message": "로그인에 실패하였습니다"}, status=status.HTTP_400_BAD_REQUEST
             )
 
 
@@ -130,7 +130,7 @@ class OnboardingView(APIView):
             user = res[0]
             access_token = res[1]
             refresh_token = res[2]
-            response = Response({"message": "success"}, status=status.HTTP_200_OK)
+            response = Response(data={"message": "success"}, status=status.HTTP_200_OK)
             response.set_cookie('access_token', access_token)
             response.set_cookie('refresh_token', refresh_token)
 
@@ -140,4 +140,4 @@ class OnboardingView(APIView):
             return response
 
         except: # get_token 함수가 None 반환 시
-            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_302_FOUND)
+            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)

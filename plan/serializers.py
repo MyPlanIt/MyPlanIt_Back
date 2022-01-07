@@ -17,10 +17,15 @@ class PlanDetailSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'intro_img_url']
 
 
-class OwnPlanSerializer(TaggitSerializer, serializers.ModelSerializer):
+class UserPlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User_Plan
+        fields = ['plan']
 
+
+class OwnPlanSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField()
 
     class Meta:
-        model = User_Plan
-        fields = ['plan_id', 'plan_writer']
+        model = Plan
+        fields = ['id', 'name', 'tags', 'writer_name', 'intro_img_url']

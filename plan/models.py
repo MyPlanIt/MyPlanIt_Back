@@ -17,7 +17,7 @@ class Plan(models.Model):
     name2 = models.CharField(max_length=30, blank=True, null=True)
     price = models.PositiveIntegerField(default=0)
     writer_name = models.CharField(max_length=20)
-    writer_img = models.URLField()
+    writer_img = models.URLField(blank=True, null=True)
     writer_intro = models.CharField(max_length=30)
     intro_img_url = models.URLField() # 플랜 클릭 시 보여줘야 할 이미지파일
     desc = models.TextField()

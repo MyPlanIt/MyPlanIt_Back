@@ -62,6 +62,33 @@ class PlanBuyView(APIView):
             return Response({"message": "로그인이 만료되었습니다"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+# 특정 플랜 찜하기
+class PlanWishView(APIView):
+    def post(self, request, pk):
+
+        try:
+            res = get_user_and_plan(request, pk)
+
+            user_wish_plan = User_Plan.objects.filter(user=res[0]).filter(plan=res[1]).filter(wish_flag=True)
+            user_plan = User_Plan.objects.filter(user=res[0]).filter(plan=res[1])
+
+            if user_wish_plan.exists():
+                user_wish_plan.update(wish_flag=False)
+                return Response({"message": "찜하기가 취소되었습니다."}, status=status.HTTP_200_OK)
+
+            elif user_plan.exists():
+                user_plan.update(wish_flag=True)
+                return Response({"message": "찜!"}, status=status.HTTP_200_OK)
+
+            else:
+                new = User_Plan.objects.create(user=res[0], plan=res[1], own_flag=False, wish_flag=True)
+                new.save()
+                return Response({"message": "찜!"}, status=status.HTTP_200_OK)
+
+        except:
+            return Response({"message": "로그인이 만료되었습니다"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 # 유저 소유 플랜 조회
 class OwnPlanView(APIView):
     def get(self, request):

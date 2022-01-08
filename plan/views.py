@@ -3,8 +3,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .models import Plan, User_Plan
-from .serializers import PlanSerializer, PlanDetailSerializer, OwnPlanSerializer, UserPlanSerializer
+from .serializers import PlanSerializer, PlanDetailSerializer, UserPlanSerializer
 from jwt_token import jwt_token
+
+
+def get_user_and_plan(request, pk):
+    res = list(jwt_token.get_token(request))
+    user = res[0]  # 토큰으로 유저 조회
+    plan = get_object_or_404(Plan, id=pk)
+    return user, plan
 
 
 # 전체 플랜 조회
@@ -34,9 +41,7 @@ class PlanBuyView(APIView):
     def post(self, request, pk):
 
         try:
-            res = list(jwt_token.get_token(request))
-            user = res[0]  # 토큰으로 유저 조회
-            plan = get_object_or_404(Plan, id=pk)
+            res = get_user_and_plan(request, pk)
 
             user_plan = User_Plan.objects.filter(user=user).filter(plan=plan)
 

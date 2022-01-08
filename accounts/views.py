@@ -28,10 +28,13 @@ class SignupView(APIView):
             email_agree = request.data['email_agree']
             sns_agree = request.data['sns_agree']
 
+            if User.objects.filter(email=email).exists() and User.objects.filter(username=username).exists():
+                return Response({"message": "email과 username이 모두 존재합니다."}, status=status.HTTP_207_MULTI_STATUS)
+
             if User.objects.filter(email=email).exists():
                 return Response({"message": "email이 이미 존재합니다."}, status=status.HTTP_200_OK)
             if User.objects.filter(username=username).exists():
-                return Response({"nickname": "nickname이 이미 존재합니다."}, status=status.HTTP_202_ACCEPTED)
+                return Response({"message": "nickname이 이미 존재합니다."}, status=status.HTTP_202_ACCEPTED)
 
             user = User(
                 email=email,

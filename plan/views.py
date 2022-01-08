@@ -43,13 +43,19 @@ class PlanBuyView(APIView):
         try:
             res = get_user_and_plan(request, pk)
 
-            user_plan = User_Plan.objects.filter(user=user).filter(plan=plan)
+            user_own_plan = User_Plan.objects.filter(user=res[0]).filter(plan=res[1]).filter(own_flag=True)
+            user_plan = User_Plan.objects.filter(user=res[0]).filter(plan=res[1])
 
-            if user_plan.exists():
+            if user_own_plan.exists():
                 return Response({"message": "이미 구매한 플랜입니다."}, status=status.HTTP_400_BAD_REQUEST)
 
+            elif user_plan.exists():
+                user_plan.update(own_flag=True)
+                return Response({"message": "구매 완료"}, status=status.HTTP_200_OK)
+
             else:
-                new = User_Plan.objects.create(user=user, plan=plan)
+                new = User_Plan.objects.create(user=res[0], plan=res[1])
+                new.save()
                 return Response({"message": "구매 완료"}, status=status.HTTP_200_OK)
 
         except:

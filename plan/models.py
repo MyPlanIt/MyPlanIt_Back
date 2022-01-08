@@ -45,16 +45,13 @@ class Plan_todo_video(models.Model):
 
 ### 중개 모델들 ###
 class User_Plan(models.Model):
-    wish_flag = models.BooleanField(default=False) # 찜하기
-    register_flag = models.BooleanField(default=False) # 등록
-    own_flag = models.BooleanField(default=False) # 소유
+    wish_flag = models.BooleanField(default=False)  # 찜하기
+    register_flag = models.BooleanField(default=False)  # 등록
+    own_flag = models.BooleanField(default=True)  # 소유
     finish_flag = models.BooleanField(default=False)
 
     user = models.ForeignKey(User, related_name='users', on_delete=models.CASCADE)
     plan = models.ForeignKey(Plan, related_name='plans', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.plan.name
 
 
 class User_plan_todo(models.Model):

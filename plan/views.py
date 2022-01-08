@@ -29,7 +29,8 @@ class PlanDetailView(APIView):
         return Response(serializer.data)
 
 
-    # 특정 플랜 구매
+# 특정 플랜 구매
+class PlanBuyView(APIView):
     def post(self, request, pk):
 
         try:
@@ -37,14 +38,13 @@ class PlanDetailView(APIView):
             user = res[0]  # 토큰으로 유저 조회
             plan = get_object_or_404(Plan, id=pk)
 
-            if User_Plan.objects.filter(user=user).filter(plan=plan) is not None:
+            user_plan = User_Plan.objects.filter(user=user).filter(plan=plan)
+
+            if user_plan.exists():
                 return Response({"message": "이미 구매한 플랜입니다."}, status=status.HTTP_400_BAD_REQUEST)
 
             else:
-                user_plan = User_Plan()
-                user_plan.user = user
-                user_plan.plan = plan
-                user_plan.own_flag = True
+                new = User_Plan.objects.create(user=user, plan=plan)
                 return Response({"message": "구매 완료"}, status=status.HTTP_200_OK)
 
         except:

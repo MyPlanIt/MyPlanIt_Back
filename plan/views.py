@@ -54,7 +54,7 @@ class PlanBuyView(APIView):
                 return Response({"message": "구매 완료"}, status=status.HTTP_200_OK)
 
             else:
-                new = User_Plan.objects.create(user=res[0], plan=res[1])
+                new = User_Plan.objects.create(user=res[0], plan=res[1], own_flag=True)
                 new.save()
                 return Response({"message": "구매 완료"}, status=status.HTTP_200_OK)
 
@@ -81,7 +81,7 @@ class PlanWishView(APIView):
                 return Response({"message": "찜!"}, status=status.HTTP_200_OK)
 
             else:
-                new = User_Plan.objects.create(user=res[0], plan=res[1], own_flag=False, wish_flag=True)
+                new = User_Plan.objects.create(user=res[0], plan=res[1], wish_flag=True)
                 new.save()
                 return Response({"message": "찜!"}, status=status.HTTP_200_OK)
 

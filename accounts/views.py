@@ -20,18 +20,41 @@ from jwt_token.jwt_token import get_token, get_user
 # 회원가입
 class SignupView(APIView):
     def post(self, request):
-        serializer = SignupSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
+        try:
+            email = request.data['email']
+            password = request.data['password']
+            realname = request.data['realname']
+            username = request.data['username']
+            email_agree = request.data['email_agree']
+            sns_agree = request.data['sns_agree']
+
+            if User.objects.filter(email=email).exists():
+                return Response({"message": "email이 이미 존재합니다."}, status=status.HTTP_200_OK)
+            if User.objects.filter(username=username).exists():
+                return Response({"nickname": "nickname이 이미 존재합니다."}, status=status.HTTP_202_ACCEPTED)
+
+            user = User(
+                email=email,
+                realname=realname,
+                username=username,
+                email_agree=email_agree,
+                sns_agree=sns_agree
+            )
+            user.set_password(password)
+            user.save()
+
             # 회원가입 이후 첫 토큰 발행
-            token = TokenObtainPairSerializer.get_token(user) # refresh 토큰 가져오기
+            token = TokenObtainPairSerializer.get_token(user)  # refresh 토큰 가져오기
             refresh_token = str(token)
-            access_token = str(token.access_token) # access 토큰 가져오기
-            response = Response(serializer.data, status=status.HTTP_201_CREATED)
+            access_token = str(token.access_token)  # access 토큰 가져오기
+            response = Response(status=status.HTTP_201_CREATED)
             response.set_cookie('access_token', access_token)
             response.set_cookie('refresh_token', refresh_token)
             return response
-        return Response(serializer.errors, status=status.HTTP_200_OK) # 회원가입 에러인 경우(email, username 검증에서 탈락 시)
+
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 
 # 로그인

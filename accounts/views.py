@@ -115,7 +115,7 @@ class LoginView(APIView):
             return response
         else: # 그 외
             return Response(
-                data={"message": "로그인에 실패하였습니다"}, status=status.HTTP_400_BAD_REQUEST
+                data={"message": "로그인에 실패하였습니다"}, status=status.HTTP_404_NOT_FOUND
             )
 
 

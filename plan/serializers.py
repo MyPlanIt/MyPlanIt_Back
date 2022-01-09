@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from taggit.serializers import TagListSerializerField, TaggitSerializer
-from .models import Plan, Plan_todo, User_Plan
+from .models import Plan, User_Plan
 
 
 class PlanSerializer(TaggitSerializer, serializers.ModelSerializer):

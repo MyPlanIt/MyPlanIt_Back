@@ -50,8 +50,8 @@ class User_Plan(models.Model):
     own_flag = models.BooleanField(default=False)  # 소유
     finish_flag = models.BooleanField(default=False)
 
-    user = models.ForeignKey(User, related_name='users', on_delete=models.CASCADE)
-    plan = models.ForeignKey(Plan, related_name='plans', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
 
 
 class User_plan_todo(models.Model):

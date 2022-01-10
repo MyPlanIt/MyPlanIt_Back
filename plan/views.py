@@ -149,3 +149,24 @@ class RegiserPlanView(APIView):
             return Response({"message": "등록완료"}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "error"}, status=status.HTTP_202_ACCEPTED)
+
+
+# 등록한 플랜 투두에서 제거하기 (User_Plan과 User_Plan_Todo에서 제거하기)
+class DeletePlanView(APIView):
+    def post(self, request, pk): # pk : plan의 id값
+        try:
+            res = list(jwt_token.get_token(request))
+            user = res[0]
+            plan = get_object_or_404(Plan, id=pk) # 지울 plan 가져오기
+            user_plan = get_object_or_404(User_Plan, user=user, plan=plan) # 지울 plan 가져오기
+
+            if user_plan.register_flag == False: # 필요없을수도 있음
+                return Response({"message": "이미 삭제한 플랜입니다."}, status=status.HTTP_202_ACCEPTED)
+
+            user_plan.register_flag = False
+            user_plan.save()
+
+            User_plan_todo.objects.filter(user=user, plan=plan).delete()
+            return Response({"message": "삭제완료"}, status=status.HTTP_200_OK)
+        except:
+            return Response({"message": "error"}, status=status.HTTP_202_ACCEPTED)

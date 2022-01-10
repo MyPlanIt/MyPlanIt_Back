@@ -29,6 +29,7 @@ class Plan(models.Model):
 class Plan_todo(models.Model):
     name = models.CharField(max_length=30)
     img_url = models.URLField()
+    media_flag = models.BooleanField(default=0)
     date = models.PositiveIntegerField(default=0)
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
 
@@ -40,6 +41,7 @@ class Plan_todo_video(models.Model):
     title = models.CharField(max_length=30)
     video_url = models.URLField()
     desc = models.TextField()
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
     plan_todo = models.ForeignKey(Plan_todo, on_delete=models.CASCADE)
 
 
@@ -59,6 +61,7 @@ class User_plan_todo(models.Model):
     date = models.DateField()
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
     plan_todo = models.ForeignKey(Plan_todo, on_delete=models.CASCADE)
 
 

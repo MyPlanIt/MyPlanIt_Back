@@ -10,4 +10,5 @@ urlpatterns = [
     path('myplan/buy', views.OwnPlanView.as_view()),
 
     path('plan/<int:pk>/register', views.RegiserPlanView.as_view()),
+    path('plan/<int:pk>/delete', views.DeletePlanView.as_view()),
 ]

@@ -3,8 +3,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .models import Plan, User_Plan
-from .serializers import PlanSerializer, PlanDetailSerializer, OwnPlanSerializer, UserPlanSerializer
+from .serializers import PlanSerializer, PlanDetailSerializer, UserPlanSerializer
 from jwt_token import jwt_token
+
+
+def get_user_and_plan(request, pk):
+    res = list(jwt_token.get_token(request))
+    user = res[0]  # 토큰으로 유저 조회
+    plan = get_object_or_404(Plan, id=pk)
+    return user, plan
 
 
 # 전체 플랜 조회
@@ -34,41 +41,85 @@ class PlanBuyView(APIView):
     def post(self, request, pk):
 
         try:
-            res = list(jwt_token.get_token(request))
-            user = res[0]  # 토큰으로 유저 조회
-            plan = get_object_or_404(Plan, id=pk)
+            res = get_user_and_plan(request, pk)
 
-            user_plan = User_Plan.objects.filter(user=user).filter(plan=plan)
+            user_own_plan = User_Plan.objects.filter(user=res[0]).filter(plan=res[1]).filter(own_flag=True)
+            user_plan = User_Plan.objects.filter(user=res[0]).filter(plan=res[1])
 
-            if user_plan.exists():
-                return Response({"message": "이미 구매한 플랜입니다."}, status=status.HTTP_400_BAD_REQUEST)
+            if user_own_plan.exists():
+                return Response({"message": "이미 구매한 플랜입니다."}, status=status.HTTP_208_ALREADY_REPORTED)
+
+            elif user_plan.exists():
+                user_plan.update(own_flag=True)
+                return Response({"message": "구매 완료"}, status=status.HTTP_200_OK)
 
             else:
-                new = User_Plan.objects.create(user=user, plan=plan)
+                new = User_Plan.objects.create(user=res[0], plan=res[1], own_flag=True)
+                new.save()
                 return Response({"message": "구매 완료"}, status=status.HTTP_200_OK)
 
         except:
             return Response({"message": "로그인이 만료되었습니다"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# 유저 소유 플랜 조회
-class OwnPlanView(APIView):
-    def get(self, request):
+# 특정 플랜 찜하기
+class PlanWishView(APIView):
+    def post(self, request, pk):
 
+        try:
+            res = get_user_and_plan(request, pk)
+
+            user_wish_plan = User_Plan.objects.filter(user=res[0]).filter(plan=res[1]).filter(wish_flag=True)
+            user_plan = User_Plan.objects.filter(user=res[0]).filter(plan=res[1])
+
+            if user_wish_plan.exists():
+                user_wish_plan.update(wish_flag=False)
+                return Response({"message": "찜하기가 취소되었습니다."}, status=status.HTTP_200_OK)
+
+            elif user_plan.exists():
+                user_plan.update(wish_flag=True)
+                return Response({"message": "찜!"}, status=status.HTTP_200_OK)
+
+            else:
+                new = User_Plan.objects.create(user=res[0], plan=res[1], wish_flag=True)
+                new.save()
+                return Response({"message": "찜!"}, status=status.HTTP_200_OK)
+
+        except:
+            return Response({"message": "로그인이 만료되었습니다"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 찜한 플랜 조회
+class WishPlanView(APIView):
+    def get(self, request):
         try:
             res = list(jwt_token.get_token(request))
             user = res[0]  # 토큰으로 유저 조회
-            user_plan = User_Plan.objects.filter(user=user).filter(own_flag=True)  # 토큰으로 조회한 유저의 own plan 저장
-            serializer = UserPlanSerializer(user_plan, many=True).data
+            user_plan = User_Plan.objects.filter(user=user).filter(wish_flag=True)  # 토큰으로 조회한 유저의 own plan 저장
 
-            plan_res = list()  # JSON 값 저장할 리스트 생성
-            for i in range(len(serializer)):
-                plan = serializer[i]
-                own_plan = Plan.objects.filter(id=plan['plan'])
-                own_plan_serializer = OwnPlanSerializer(own_plan, many=True).data
-                plan_res.append(own_plan_serializer)
+            if user_plan.exists():
+                return Response(UserPlanSerializer(user_plan, many=True).data, status=status.HTTP_200_OK)
 
-            return Response(plan_res, status=status.HTTP_200_OK)
+            else:
+                return Response({"message": "찜한 플랜이 없습니다."}, status=status.HTTP_200_OK)
 
         except:
+            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 유저 소유 플랜 조회
+class OwnPlanView(APIView):
+    def get(self, request):
+         try:
+            res = list(jwt_token.get_token(request))
+            user = res[0]  # 토큰으로 유저 조회
+            user_plan = User_Plan.objects.filter(user=user).filter(own_flag=True)  # 토큰으로 조회한 유저의 own plan 저장
+
+            if user_plan.exists():
+                return Response(UserPlanSerializer(user_plan, many=True).data, status=status.HTTP_200_OK)
+
+            else:
+                return Response({"message": "소유한 플랜이 없습니다."}, status=status.HTTP_200_OK)
+
+         except:
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)

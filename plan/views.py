@@ -2,9 +2,10 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from .models import Plan, User_Plan
+from .models import Plan, User_Plan, Plan_todo, User_plan_todo
 from .serializers import PlanSerializer, PlanDetailSerializer, UserPlanSerializer
 from jwt_token import jwt_token
+import datetime
 
 
 def get_user_and_plan(request, pk):
@@ -107,7 +108,7 @@ class WishPlanView(APIView):
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# 유저 소유 플랜 조회
+# 구매한 플랜 조회
 class OwnPlanView(APIView):
     def get(self, request):
          try:
@@ -123,3 +124,28 @@ class OwnPlanView(APIView):
 
          except:
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 플랜 구매 -> 등록하기 (플랜에 해당하는 투두들 user_plan_todo db에 넣기)
+class RegiserPlanView(APIView):
+    def post(self, request, pk): # pk : plan의 id값
+        try:
+            res = list(jwt_token.get_token(request))
+            user = res[0]
+            plan = get_object_or_404(Plan, id=pk)
+            user_plan = get_object_or_404(User_Plan, user=user, plan=plan)
+
+            if user_plan.register_flag == True: # 이미 등록한 플랜인 경우
+                return Response({"message": "이미 등록한 플랜입니다."}, status=status.HTTP_202_ACCEPTED)
+
+            plan_todos = Plan_todo.objects.filter(plan=plan)
+            date = datetime.date.today() # 오늘 날짜 가져오기
+            for plan_todo in plan_todos:
+                date += datetime.timedelta(days=plan_todo.date) # 날짜 + 걸리는 일수에 맞게 db에 넣어주기
+                user_plan_todo = User_plan_todo(user=user, plan=plan, plan_todo=plan_todo, date=date)
+                user_plan_todo.save()
+            user_plan.register_flag = True # 등록 flag = True 로 변경
+            user_plan.save()
+            return Response({"message": "등록완료"}, status=status.HTTP_200_OK)
+        except:
+            return Response({"message": "error"}, status=status.HTTP_202_ACCEPTED)

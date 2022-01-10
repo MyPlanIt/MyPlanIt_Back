@@ -8,4 +8,6 @@ urlpatterns = [
     path('plan/<int:pk>/wish', views.PlanWishView.as_view()),
     path('myplan', views.WishPlanView.as_view()),
     path('myplan/buy', views.OwnPlanView.as_view()),
+
+    path('plan/<int:pk>/register', views.RegiserPlanView.as_view()),
 ]

@@ -2,13 +2,13 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('plan', views.PlanView.as_view()),
-    path('plan/<int:pk>', views.PlanDetailView.as_view()),
-    path('plan/<int:pk>/buy', views.PlanBuyView.as_view()),
-    path('plan/<int:pk>/wish', views.PlanWishView.as_view()),
-    path('myplan', views.WishPlanView.as_view()),
-    path('myplan/buy', views.OwnPlanView.as_view()),
+    path('plans', views.PlanView.as_view()), # 전체 플랜 조회
+    path('plans/<int:pk>', views.PlanDetailView.as_view()), # 특정 플랜 조회
+    path('plans/<int:pk>/buy', views.PlanBuyView.as_view()), # 특정 플랜 구매
+    path('plans/<int:pk>/wish', views.PlanWishView.as_view()), # 특정 플랜 찜하기
+    path('myplans/wish', views.WishPlanView.as_view()), # 유저가 찜한 플랜 조회
+    path('myplans/buy', views.OwnPlanView.as_view()), # 유저가 구매한 플랜 조회
 
-    path('plan/<int:pk>/register', views.RegiserPlanView.as_view()),
-    path('plan/<int:pk>/delete', views.DeletePlanView.as_view()),
+    path('myplans/<int:pk>/register', views.RegiserPlanView.as_view()), # 구매한 플랜 등록
+    path('myplans/<int:pk>/delete', views.DeletePlanView.as_view()), # 등록한 플랜 삭제
 ]

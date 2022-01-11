@@ -14,9 +14,6 @@ import jwt
 from jwt_token.jwt_token import get_token, get_user
 
 
-# Create your views here.
-
-
 # 회원가입
 class SignupView(APIView):
     def post(self, request):

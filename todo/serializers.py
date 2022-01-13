@@ -44,3 +44,9 @@ class PlanTodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_plan_todo
         fields = ['id', 'plan_todo_id', 'plan_todo', 'finish_flag']
+
+
+class TodoMediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Plan_todo_video
+        fields = ['id', 'title', 'video_url', 'desc']

@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from plan.models import Plan, User_Plan, Plan_todo, User_plan_todo
-from .serializers import UserPlanTodoSerializer
+from .serializers import UserPlanTodoSerializer, PlanTodoSerializer
 from jwt_token import jwt_token
 import datetime
 
@@ -31,7 +31,7 @@ class PlanTodoAPIView(APIView):
 
             return Response(data, status=status.HTTP_200_OK)
         except:
-            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "error"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # 플랜 투두 완료 기능 (체크 기능)
@@ -61,7 +61,7 @@ class PlanTodoCheckAPIView(APIView):
            user_plan.save()
            return Response({"message": "success"}, status=status.HTTP_200_OK)
        except:
-           return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
+           return Response({"message": "error"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # 플랜 투두 내일하기 기능
@@ -74,3 +74,20 @@ class PlanTodoDelayAPIView(APIView):
             return Response({"message": "success"}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "error"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 플랜 클릭 시 전체 투두 조회 기능
+class AllTodoAPIView(APIView):
+    def get(self, request, plan_id):
+        try:
+            res = list(jwt_token.get_token(request))
+            user = res[0]  # 토큰으로 유저 조회
+            plan = get_object_or_404(Plan, id=plan_id)
+            plan_todo_querysets = User_plan_todo.objects.filter(user=user, plan=plan)
+            data = {}
+            serializer = PlanTodoSerializer(plan_todo_querysets, many=True)
+            data[plan.name] = list(serializer.data)
+            return Response(data, status=status.HTTP_200_OK)
+        except:
+            return Response({"message": "error"}, status=status.HTTP_400_BAD_REQUEST)
+

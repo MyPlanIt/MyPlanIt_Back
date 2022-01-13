@@ -62,3 +62,15 @@ class PlanTodoCheckAPIView(APIView):
            return Response({"message": "success"}, status=status.HTTP_200_OK)
        except:
            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 플랜 투두 내일하기 기능
+class PlanTodoDelayAPIView(APIView):
+    def post(self, request, plan_todo_id):
+        try:
+            user_plan_todo = get_object_or_404(User_plan_todo, id=plan_todo_id)
+            user_plan_todo.date += datetime.timedelta(days=1) # 플랜 투두 날짜 + 1
+            user_plan_todo.save()
+            return Response({"message": "success"}, status=status.HTTP_200_OK)
+        except:
+            return Response({"message": "error"}, status=status.HTTP_400_BAD_REQUEST)

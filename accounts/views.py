@@ -1,17 +1,15 @@
 import jwt.exceptions
-from django.shortcuts import render, get_object_or_404
+import rest_framework_simplejwt.exceptions
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.parsers import JSONParser
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from django.contrib.auth.hashers import check_password
 from django.http import JsonResponse
 
 from myplanit.settings import env
 from .models import User
-from .serializers import SignupSerializer, UserSeriallizer
+from .serializers import SignupSerializer, UserSerializer
 import jwt
 from jwt_token.jwt_token import get_token, get_user
 
@@ -49,7 +47,7 @@ class SignupView(APIView):
             token = TokenObtainPairSerializer.get_token(user)  # refresh 토큰 가져오기
             refresh_token = str(token)
             access_token = str(token.access_token)  # access 토큰 가져오기
-            response = Response(status=status.HTTP_201_CREATED)
+            response = Response({"message": "회원가입 완료"}, status=status.HTTP_201_CREATED)
             response.set_cookie('access_token', access_token)
             response.set_cookie('refresh_token', refresh_token)
             return response
@@ -68,7 +66,7 @@ class LoginView(APIView):
             payload = jwt.decode(access_token, env('DJANGO_SECRET_KEY'), algorithms=['HS256'])
             pk = payload.get('user_id')
             user = get_user(pk)
-            serializer = UserSeriallizer(user)
+            serializer = UserSerializer(user)
             response = Response(
                 serializer.data,
                 status=status.HTTP_200_OK
@@ -89,7 +87,7 @@ class LoginView(APIView):
                     payload = jwt.decode(access_token, env('DJANGO_SECRET_KEY'), algorithms=['HS256'])
                     pk = payload.get('user_id')
                     user = get_user(pk)
-                    serializer = UserSeriallizer(instance=user)
+                    serializer = UserSerializer(instance=user)
                     response = Response(serializer.data, status=status.HTTP_200_OK)
                     response.set_cookie('access_token', access_token)
                     response.set_cookie('refresh_token', refresh_token)
@@ -126,7 +124,7 @@ class LoginView(APIView):
             access_token = str(token.access_token)
             response = Response(
                 {
-                    "user": UserSeriallizer(user).data,
+                    "user": UserSerializer(user).data,
                     "message": "login success",
                     "jwt_token": {
                         "access_token": access_token,

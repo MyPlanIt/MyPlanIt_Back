@@ -3,8 +3,8 @@ from django.db.models import Count
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from plan.models import Plan, User_Plan, Plan_todo, User_plan_todo
-from .serializers import UserPlanTodoSerializer, PlanTodoSerializer
+from plan.models import Plan, User_Plan, Plan_todo, User_plan_todo, Plan_todo_video
+from .serializers import UserPlanTodoSerializer, PlanTodoSerializer, TodoMediaSerializer
 from jwt_token import jwt_token
 import datetime
 
@@ -88,6 +88,21 @@ class AllTodoAPIView(APIView):
             serializer = PlanTodoSerializer(plan_todo_querysets, many=True)
             data[plan.name] = list(serializer.data)
             return Response(data, status=status.HTTP_200_OK)
+        except:
+            return Response({"message": "error"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 투두 하나 클릭 시 세부 정보 조회
+class DetailTodoAPIView(APIView):
+    def get(self, request, plan_todo_id):
+        try:
+            plan_todo = get_object_or_404(Plan_todo, id=plan_todo_id)
+            if plan_todo.media_flag == False: # 이미지만 있는 경우
+                return Response({"image_url": plan_todo.img_url}, status=status.HTTP_200_OK)
+            else:
+                media_querysets = Plan_todo_video.objects.filter(plan_todo_id=plan_todo_id)
+                serializer = TodoMediaSerializer(media_querysets, many=True)
+                return Response({"media": serializer.data}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "error"}, status=status.HTTP_400_BAD_REQUEST)
 

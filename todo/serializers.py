@@ -29,3 +29,18 @@ class UserPlanTodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_plan_todo
         fields = ['id', 'plan_id', 'plan_todo_id', 'plan_todo', 'finish_flag', 'date']
+
+
+class PlanTodoSerializer(serializers.ModelSerializer):
+    plan_todo_id = serializers.SerializerMethodField()
+    plan_todo = serializers.SerializerMethodField()
+
+    def get_plan_todo_id(self, obj):
+        return obj.plan_todo.id
+
+    def get_plan_todo(self, obj):
+        return obj.plan_todo.name
+
+    class Meta:
+        model = User_plan_todo
+        fields = ['id', 'plan_todo_id', 'plan_todo', 'finish_flag']

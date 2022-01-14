@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from plan.models import Plan, Plan_todo, Plan_todo_video, User_Plan, User_plan_todo
+from plan.models import Plan, Plan_todo_video, User_plan_todo
+from todo.models import User_personal_todo
 
 
 class PlanSerializer(serializers.ModelSerializer):
@@ -50,3 +51,9 @@ class TodoMediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plan_todo_video
         fields = ['id', 'title', 'video_url', 'desc']
+
+
+class UserPersonalTodoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User_personal_todo
+        fields = ['id', 'todo_name', 'date', 'finish_flag', 'delete_flag']

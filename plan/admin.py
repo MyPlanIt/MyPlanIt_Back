@@ -31,7 +31,7 @@ class Plan_todo_videoAdmin(admin.ModelAdmin):
 
 @admin.register(User_Plan)
 class User_PlanAdmin(admin.ModelAdmin):
-    list_display = ['user', 'plan', 'wish_flag', 'register_flag', 'own_flag', 'finish_flag']
+    list_display = ['user', 'plan', 'wish_flag', 'register_flag', 'own_flag', 'finish_flag', 'rate']
 
 
 @admin.register(User_plan_todo)

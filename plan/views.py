@@ -163,10 +163,11 @@ class DeletePlanView(APIView):
             if user_plan.register_flag == False: # 필요없을수도 있음
                 return Response({"message": "이미 삭제한 플랜입니다."}, status=status.HTTP_202_ACCEPTED)
 
-            user_plan.register_flag = False
+            user_plan.register_flag = False # 등록 flag를 False로 변경
+            user_plan.rate = 0 # 달성률 0으로 변경
             user_plan.save()
 
-            User_plan_todo.objects.filter(user=user, plan=plan).delete()
+            User_plan_todo.objects.filter(user=user, plan=plan).delete() # user_plan_todo에 등록된 객체들 다 삭제
             return Response({"message": "삭제완료"}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "error"}, status=status.HTTP_202_ACCEPTED)

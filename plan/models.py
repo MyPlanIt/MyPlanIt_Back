@@ -51,6 +51,7 @@ class User_Plan(models.Model):
     register_flag = models.BooleanField(default=False)  # 등록
     own_flag = models.BooleanField(default=False)  # 소유
     finish_flag = models.BooleanField(default=False)
+    rate = models.IntegerField(default=0) # 달성률
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE)

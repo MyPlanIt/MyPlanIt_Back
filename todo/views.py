@@ -161,7 +161,7 @@ class PersonalTodoCheckAPIView(APIView):
 class PersonalTodoDeleteAPIView(APIView):
     def post(self, request, id):
         try:
-            user_todo = get_object_or_404(User_personal_todo, user=get_user(request), id=id, finish_flag=False)
+            user_todo = get_object_or_404(User_personal_todo, user=get_user(request), id=id)
             user_todo.delete()
             return Response({"message": "투두를 삭제하였습니다."}, status=status.HTTP_200_OK)
 
@@ -173,7 +173,7 @@ class PersonalTodoDeleteAPIView(APIView):
 class PersonalTodoEditAPIView(APIView):
     def post(self, request, id):
         try:
-            user_todo = get_object_or_404(User_personal_todo, user=get_user(request), id=id, finish_flag=False)
+            user_todo = get_object_or_404(User_personal_todo, user=get_user(request), id=id)
 
             user_todo.todo_name = request.data['todo_name']
             user_todo.save()
@@ -187,7 +187,7 @@ class PersonalTodoEditAPIView(APIView):
 class PersonalTodoDelayAPIView(APIView):
     def post(self, request, id):
         try:
-            user_todo = get_object_or_404(User_personal_todo, user=get_user(request), id=id, finish_flag=False)
+            user_todo = get_object_or_404(User_personal_todo, user=get_user(request), id=id)
             user_todo.date += datetime.timedelta(days=1)  # 개인 투두 날짜 + 1
             user_todo.save()
             return Response({"message": "투두를 내일로 미뤘습니다."}, status=status.HTTP_200_OK)

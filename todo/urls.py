@@ -8,9 +8,7 @@ urlpatterns = [
     path('todos/plan/<int:plan_id>/todos', views.AllTodoAPIView.as_view()),  # 플랜 클릭 시 전체 투두 조회 기능
     path('todos/plan/<int:plan_todo_id>/detail', views.DetailTodoAPIView.as_view()),  # 투두 세부 정보 조회 기능
 
-
-    path('todos/my', views.PersonalTodoAPIView.as_view()),  # 현재 날짜의 개인 투두 조회, 추가
-    path('todos/my/<str:date>', views.SpecificPersonalTodoAPIVIew.as_view()),  # 특정 날짜의 개인 투두 조회, 추가
+    path('todos/my/<str:date>', views.PersonalTodoAPIVIew.as_view()),  # 특정 날짜의 개인 투두 조회, 추가
     path('todos/my/<int:id>/check', views.PersonalTodoCheckAPIView.as_view()),  # 개인 투두 완료 기능
     path('todos/my/<int:id>/delete', views.PersonalTodoDeleteAPIView.as_view()),  # 개인 투두 삭제 기능
     path('todos/my/<int:id>/edit', views.PersonalTodoEditAPIView.as_view()),  # 개인 투두 수정 기능

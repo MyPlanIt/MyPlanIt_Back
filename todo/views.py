@@ -17,13 +17,6 @@ def get_user(request):
     return user
 
 
-# 현재 날짜 받아오는 함수 (to refactor)
-def get_today():
-    now = datetime.datetime.now()
-    today_date = now.strftime('%Y-%m-%d')
-    return today_date
-
-
 # 해당 날짜의 플랜 투두 조회
 class PlanTodoAPIView(APIView):
     def get(self, request, pk):  # pk의 default = 현재 날짜 값 (ex, 20-01-11)
@@ -119,34 +112,8 @@ class DetailTodoAPIView(APIView):
             return Response({"message": "error"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# 현재 날짜의 개인 투두 조회, 추가
-class PersonalTodoAPIView(APIView):
-    def get(self, request):  # 개인 투두 조회
-        try:
-            # 최근에 생성된 투두가 위로 올라가도록 id 내림차순
-            user_todos = User_personal_todo.objects.filter(user=get_user(request)).filter(date=get_today()).order_by('-id')
-            return Response(UserPersonalTodoSerializer(user_todos, many=True).data, status=status.HTTP_200_OK)
-
-        except:
-            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
-
-    def post(self, request):  # 개인 투두 추가
-        try:
-            user_todo = User_personal_todo(
-                user=get_user(request),
-                todo_name=request.data['todo_name'],
-                date=get_today()
-            )
-            user_todo.save()
-
-            return Response({"message": "Todo가 생성되었습니다."}, status=status.HTTP_200_OK)
-
-        except:
-            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
-
-
-# 특정 날짜의 개인 투두 조회, 추가
-class SpecificPersonalTodoAPIVIew(APIView):
+# 개인 투두 조회, 추가
+class PersonalTodoAPIVIew(APIView):
     def get(self, request, date):
         try:
             user_todos = User_personal_todo.objects.filter(user=get_user(request)).filter(date=date).order_by('-id')

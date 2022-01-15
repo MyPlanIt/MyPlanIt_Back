@@ -162,14 +162,8 @@ class PersonalTodoDeleteAPIView(APIView):
     def post(self, request, id):
         try:
             user_todo = get_object_or_404(User_personal_todo, user=get_user(request), id=id, finish_flag=False)
-
-            if user_todo.delete_flag:
-                return Response({"message": "이미 삭제된 투두입니다."}, status=status.HTTP_200_OK)
-
-            else:
-                user_todo.delete_flag = True
-                user_todo.save()
-                return Response({"message": "투두를 삭제하였습니다."}, status=status.HTTP_200_OK)
+            user_todo.delete()
+            return Response({"message": "투두를 삭제하였습니다."}, status=status.HTTP_200_OK)
 
         except:
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)

@@ -56,4 +56,4 @@ class TodoMediaSerializer(serializers.ModelSerializer):
 class UserPersonalTodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_personal_todo
-        fields = ['id', 'todo_name', 'date', 'finish_flag', 'delete_flag']
+        fields = ['id', 'todo_name', 'date', 'finish_flag']

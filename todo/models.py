@@ -7,7 +7,6 @@ class User_personal_todo(models.Model):
     todo_name = models.CharField(max_length=100)
     date = models.DateField()
     finish_flag = models.BooleanField(default=False)
-    delete_flag = models.BooleanField(default=False)
 
     def __str__(self):
         return self.todo_name

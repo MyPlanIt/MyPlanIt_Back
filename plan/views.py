@@ -95,7 +95,7 @@ class WishPlanView(APIView):
 class WishPlansView(APIView):
     def get(self, request):
         try:
-            user_plan = User_Plan.objects.filter(user=get_user(request)).filter(wish_flag=True)  # 토큰으로 조회한 유저의 own plan 저장
+            user_plan = User_Plan.objects.filter(user=get_user(request)).filter(wish_flag=True).order_by('created_at')
 
             if user_plan.exists():
                 return Response(UserPlanSerializer(user_plan, many=True).data, status=status.HTTP_200_OK)

@@ -95,7 +95,7 @@ class WishPlanView(APIView):
 class WishPlansView(APIView):
     def get(self, request):
         try:
-            user_plan = User_Plan.objects.filter(user=get_user(request)).filter(wish_flag=True).order_by('-timestamp')
+            user_plan = User_Plan.objects.filter(user=get_user(request)).filter(wish_flag=True).order_by('updated_at')
 
             if user_plan.exists():
                 return Response(UserPlanSerializer(user_plan, many=True).data, status=status.HTTP_200_OK)

@@ -50,6 +50,9 @@ class User_Plan(models.Model):
     finish_flag = models.BooleanField(default=False)
     rate = models.IntegerField(default=0)  # 달성률
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
 

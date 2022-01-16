@@ -6,6 +6,7 @@ from .models import Plan, User_Plan, Plan_todo, User_plan_todo
 from .serializers import PlanSerializer, PlanDetailSerializer, UserPlanSerializer
 from jwt_token import jwt_token
 import datetime
+from todo.views import get_user
 
 
 def get_user_and_plan(request, pk):
@@ -17,7 +18,7 @@ def get_user_and_plan(request, pk):
 
 # 전체 플랜 조회
 class PlanView(APIView):
-    def get(self, request):
+    def get(self):
         routine = Plan.objects.filter(category="Routine")
         growth = Plan.objects.filter(category="Growth")
 
@@ -31,14 +32,14 @@ class PlanView(APIView):
 
 # 특정 플랜 조회
 class PlanDetailView(APIView):
-    def get(self, request, pk, format=None):
+    def get(self, pk, format=None):
         plan = get_object_or_404(Plan, id=pk)
         serializer = PlanDetailSerializer(plan)
         return Response(serializer.data)
 
 
 # 특정 플랜 구매
-class PlanBuyView(APIView):
+class BuyPlanView(APIView):
     def post(self, request, pk):
 
         try:
@@ -64,7 +65,7 @@ class PlanBuyView(APIView):
 
 
 # 특정 플랜 찜하기
-class PlanWishView(APIView):
+class WishPlanView(APIView):
     def post(self, request, pk):
 
         try:
@@ -91,12 +92,10 @@ class PlanWishView(APIView):
 
 
 # 찜한 플랜 조회
-class WishPlanView(APIView):
+class WishPlansView(APIView):
     def get(self, request):
         try:
-            res = list(jwt_token.get_token(request))
-            user = res[0]  # 토큰으로 유저 조회
-            user_plan = User_Plan.objects.filter(user=user).filter(wish_flag=True)  # 토큰으로 조회한 유저의 own plan 저장
+            user_plan = User_Plan.objects.filter(user=get_user(request)).filter(wish_flag=True)  # 토큰으로 조회한 유저의 own plan 저장
 
             if user_plan.exists():
                 return Response(UserPlanSerializer(user_plan, many=True).data, status=status.HTTP_200_OK)
@@ -109,12 +108,10 @@ class WishPlanView(APIView):
 
 
 # 구매한 플랜 조회
-class OwnPlanView(APIView):
+class BuyPlansView(APIView):
     def get(self, request):
-         try:
-            res = list(jwt_token.get_token(request))
-            user = res[0]  # 토큰으로 유저 조회
-            user_plan = User_Plan.objects.filter(user=user).filter(own_flag=True)  # 토큰으로 조회한 유저의 own plan 저장
+        try:
+            user_plan = User_Plan.objects.filter(user=get_user(request)).filter(own_flag=True)  # 토큰으로 조회한 유저의 own plan 저장
 
             if user_plan.exists():
                 return Response(UserPlanSerializer(user_plan, many=True).data, status=status.HTTP_200_OK)
@@ -122,29 +119,43 @@ class OwnPlanView(APIView):
             else:
                 return Response({"message": "소유한 플랜이 없습니다."}, status=status.HTTP_200_OK)
 
-         except:
+        except:
+            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 이용 중 플랜 조회
+class RegisteredPlanView(APIView):
+    def get(self, request):
+        try:
+            user_plan = User_Plan.objects.filter(user=get_user(request)).filter(register_flag=True)
+
+            if user_plan.exists():
+                return Response(UserPlanSerializer(user_plan, many=True).data, status=status.HTTP_200_OK)
+
+            else:
+                return Response({"message": "이용 중인 플랜이 없습니다."}, status=status.HTTP_200_OK)
+
+        except:
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # 플랜 구매 -> 등록하기 (플랜에 해당하는 투두들 user_plan_todo db에 넣기)
-class RegiserPlanView(APIView):
-    def post(self, request, pk): # pk : plan의 id값
+class RegisterPlanView(APIView):
+    def post(self, request, pk):  # pk : plan의 id값
         try:
-            res = list(jwt_token.get_token(request))
-            user = res[0]
             plan = get_object_or_404(Plan, id=pk)
-            user_plan = get_object_or_404(User_Plan, user=user, plan=plan)
+            user_plan = get_object_or_404(User_Plan, user=get_user(request), plan=plan)
 
-            if user_plan.register_flag == True: # 이미 등록한 플랜인 경우
+            if user_plan.register_flag:  # 이미 등록한 플랜인 경우
                 return Response({"message": "이미 등록한 플랜입니다."}, status=status.HTTP_202_ACCEPTED)
 
             plan_todos = Plan_todo.objects.filter(plan=plan)
-            date = datetime.date.today() # 오늘 날짜 가져오기
+            date = datetime.date.today()  # 오늘 날짜 가져오기
             for plan_todo in plan_todos:
-                date += datetime.timedelta(days=plan_todo.date) # 날짜 + 걸리는 일수에 맞게 db에 넣어주기
-                user_plan_todo = User_plan_todo(user=user, plan=plan, plan_todo=plan_todo, date=date)
+                date += datetime.timedelta(days=plan_todo.date)  # 날짜 + 걸리는 일수에 맞게 db에 넣어주기
+                user_plan_todo = User_plan_todo(user=get_user(request), plan=plan, plan_todo=plan_todo, date=date)
                 user_plan_todo.save()
-            user_plan.register_flag = True # 등록 flag = True 로 변경
+            user_plan.register_flag = True  # 등록 flag = True 로 변경
             user_plan.save()
             return Response({"message": "등록완료"}, status=status.HTTP_200_OK)
         except:
@@ -153,20 +164,19 @@ class RegiserPlanView(APIView):
 
 # 등록한 플랜 투두에서 제거하기 (User_Plan과 User_Plan_Todo에서 제거하기)
 class DeletePlanView(APIView):
-    def post(self, request, pk): # pk : plan의 id값
+    def post(self, request, pk):  # pk : plan의 id값
         try:
-            res = list(jwt_token.get_token(request))
-            user = res[0]
-            plan = get_object_or_404(Plan, id=pk) # 지울 plan 가져오기
-            user_plan = get_object_or_404(User_Plan, user=user, plan=plan) # 지울 plan 가져오기
+            plan = get_object_or_404(Plan, id=pk)  # 지울 plan 가져오기
+            user_plan = get_object_or_404(User_Plan, user=get_user(request), plan=plan)  # 지울 plan 가져오기
 
-            if user_plan.register_flag == False: # 필요없을수도 있음
+            if not user_plan.register_flag:  # 필요없을수도 있음
                 return Response({"message": "이미 삭제한 플랜입니다."}, status=status.HTTP_202_ACCEPTED)
 
-            user_plan.register_flag = False
+            user_plan.register_flag = False  # 등록 flag를 False로 변경
+            user_plan.rate = 0  # 달성률 0으로 변경
             user_plan.save()
 
-            User_plan_todo.objects.filter(user=user, plan=plan).delete()
+            User_plan_todo.objects.filter(user=get_user(request), plan=plan).delete()  # user_plan_todo에 등록된 객체들 다 삭제
             return Response({"message": "삭제완료"}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "error"}, status=status.HTTP_202_ACCEPTED)

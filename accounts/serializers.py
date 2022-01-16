@@ -21,18 +21,18 @@ class SignupSerializer(serializers.ModelSerializer):
             return serializers.ValidationError("nickname이 이미 존재합니다.")
 
         user = User(
-            email = email,
-            realname = realname,
-            username = username,
-            email_agree = email_agree,
-            sns_agree = sns_agree
+            email=email,
+            realname=realname,
+            username=username,
+            email_agree=email_agree,
+            sns_agree=sns_agree
         )
         user.set_password(password)
         user.save()
         return user
 
 
-class UserSeriallizer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'email', 'realname', 'username']

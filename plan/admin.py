@@ -6,7 +6,7 @@ class Plan_todo_videoInline(admin.TabularInline):
     model = Plan_todo_video
 
 
-class Plan_todoInline(admin.TabularInline): # Plan_todo를 inline으로 설정
+class Plan_todoInline(admin.TabularInline):  # Plan_todo를 inline으로 설정
     model = Plan_todo
     inlines = [Plan_todo_videoInline, ]
 
@@ -14,7 +14,7 @@ class Plan_todoInline(admin.TabularInline): # Plan_todo를 inline으로 설정
 @admin.register(Plan)
 class PlanAdmin(admin.ModelAdmin):
     filter_horizontal = ['tags']
-    inlines = [Plan_todoInline, Plan_todo_videoInline] # Plan_todo를 Plan의 Inline으로 설정
+    inlines = [Plan_todoInline, Plan_todo_videoInline]  # Plan_todo를 Plan의 Inline으로 설정
     list_display = ['id', 'category', 'name', 'tag_list']
 
     def get_queryset(self, request):
@@ -31,7 +31,7 @@ class Plan_todo_videoAdmin(admin.ModelAdmin):
 
 @admin.register(User_Plan)
 class User_PlanAdmin(admin.ModelAdmin):
-    list_display = ['user', 'plan', 'wish_flag', 'register_flag', 'own_flag', 'finish_flag']
+    list_display = ['user', 'plan', 'wish_flag', 'register_flag', 'own_flag', 'finish_flag', 'rate']
 
 
 @admin.register(User_plan_todo)

@@ -10,8 +10,8 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('taggit', '0003_taggeditem_add_unique_index'),
         ('accounts', '0001_initial'),
+        ('taggit', '0003_taggeditem_add_unique_index'),
     ]
 
     operations = [

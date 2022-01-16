@@ -28,9 +28,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('DJANGO_SECRET_KEY')
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django_filters',
     'accounts',
     'plan',
+    'todo',
 ]
 
 
@@ -132,23 +133,25 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://localhost:3000",
+    "http://localhost",
+    "https://localhost:3000",
+    "https://127.0.0.1:3000",
+    "https://0.0.0.0:3000",
+    "http://my-plan-it-front.vercel.app",
+    "https://my-plan-it-front.vercel.app"
+]
+
 # simple_JWT 추가
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+    )
 }
 
 # JWT 세팅
-#SIMPLE_JWT = {
-#    # access jwt_token 유효기간 하루로 설정
-#    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(seconds=2),
-#    # refresh jwt_token 유효기간 7일로 설정
-#    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=7),
-#    # Authorization 헤더에 JWT ~~ 형식으로 입력
-#    "AUTH_HEADER_TYPES": ("JWT",),
-#}
-
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=30),
@@ -175,33 +178,3 @@ SIMPLE_JWT = {
 
     'JTI_CLAIM': 'jti',
 }
-
-CORS_ORIGIN_ALLOW_ALL = False
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-    "http://localhost:3000",
-    "http://localhost",
-    "https://localhost:3000",
-    "https://127.0.0.1:3000",
-    "https://0.0.0.0:3000",
-    "http://my-plan-it-front.vercel.app",
-    "https://my-plan-it-front.vercel.app"
-]
-
-CORS_ALLOW_CREDENTIALS = True
-
-CORS_ORIGIN_ALLOW_ALL = False
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-    "http://localhost:3000",
-    "http://localhost",
-    "https://localhost:3000",
-    "https://127.0.0.1:3000",
-    "https://0.0.0.0:3000",
-    "http://my-plan-it-front.vercel.app",
-    "https://my-plan-it-front.vercel.app"
-]
-
-CORS_ALLOW_CREDENTIALS = True

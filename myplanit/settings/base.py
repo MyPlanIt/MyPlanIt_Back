@@ -133,6 +133,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://localhost:3000",
+    "http://localhost",
+    "https://localhost:3000",
+    "https://127.0.0.1:3000",
+    "https://0.0.0.0:3000",
+    "http://my-plan-it-front.vercel.app",
+    "https://my-plan-it-front.vercel.app"
+]
+
 # simple_JWT 추가
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -167,33 +178,3 @@ SIMPLE_JWT = {
 
     'JTI_CLAIM': 'jti',
 }
-
-CORS_ORIGIN_ALLOW_ALL = False
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-    "http://localhost:3000",
-    "http://localhost",
-    "https://localhost:3000",
-    "https://127.0.0.1:3000",
-    "https://0.0.0.0:3000",
-    "http://my-plan-it-front.vercel.app",
-    "https://my-plan-it-front.vercel.app"
-]
-
-CORS_ALLOW_CREDENTIALS = True
-
-CORS_ORIGIN_ALLOW_ALL = False
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-    "http://localhost:3000",
-    "http://localhost",
-    "https://localhost:3000",
-    "https://127.0.0.1:3000",
-    "https://0.0.0.0:3000",
-    "http://my-plan-it-front.vercel.app",
-    "https://my-plan-it-front.vercel.app"
-]
-
-CORS_ALLOW_CREDENTIALS = True

@@ -10,12 +10,12 @@ class PlanSerializer(serializers.ModelSerializer):
 
 
 class UserPlanTodoSerializer(serializers.ModelSerializer):
-    #plan = serializers.SerializerMethodField() # serializer method field 이용
-    plan_todo = serializers.SerializerMethodField() # serializer method field 이용
+    # plan = serializers.SerializerMethodField() # serializer method field 이용
+    plan_todo = serializers.SerializerMethodField()  # serializer method field 이용
     plan_id = serializers.SerializerMethodField()
     plan_todo_id = serializers.SerializerMethodField()
 
-    #def get_plan(self, obj):
+    # def get_plan(self, obj):
     #    return obj.plan.name
 
     def get_plan_todo(self, obj):

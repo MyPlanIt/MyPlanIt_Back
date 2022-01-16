@@ -21,9 +21,9 @@ def get_token(request):
         return user, access_token, refresh_token
 
     # 토큰 만료시 토큰 갱신
-    except(jwt.exceptions.ExpiredSignatureError):
+    except jwt.exceptions.ExpiredSignatureError:
         try:
-            print("access만료")
+            print("access token 만료")
             serializer = TokenRefreshSerializer(data={'refresh': request.COOKIES.get('refresh_token', None)})
 
             if serializer.is_valid(raise_exception=True):
@@ -34,11 +34,11 @@ def get_token(request):
                 user = get_user(pk)
                 return user, access_token, refresh_token
 
-        except(rest_framework_simplejwt.exceptions.TokenError):
-            print("refresh토큰도 만료")
+        except rest_framework_simplejwt.exceptions.TokenError:
+            print("refresh 토큰도 만료")
             return None
 
         raise jwt.exceptions.InvalidTokenError
 
-    except(jwt.exceptions.InvalidTokenError):
+    except jwt.exceptions.InvalidTokenError:
         return None

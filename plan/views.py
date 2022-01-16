@@ -123,6 +123,22 @@ class BuyPlansView(APIView):
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
 
+# 이용 중 플랜 조회
+class RegisteredPlanView(APIView):
+    def get(self, request):
+        try:
+            user_plan = User_Plan.objects.filter(user=get_user(request)).filter(register_flag=True)
+
+            if user_plan.exists():
+                return Response(UserPlanSerializer(user_plan, many=True).data, status=status.HTTP_200_OK)
+
+            else:
+                return Response({"message": "이용 중인 플랜이 없습니다."}, status=status.HTTP_200_OK)
+
+        except:
+            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
 # 플랜 구매 -> 등록하기 (플랜에 해당하는 투두들 user_plan_todo db에 넣기)
 class RegisterPlanView(APIView):
     def post(self, request, pk):  # pk : plan의 id값

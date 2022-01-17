@@ -14,7 +14,7 @@ class PlanSerializer(TaggitSerializer, serializers.ModelSerializer):
 class PlanDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plan
-        fields = ['id', 'name', 'intro_img_url']
+        fields = ['id', 'name', 'main_img_url']
 
 
 class OwnPlanSerializer(TaggitSerializer, serializers.ModelSerializer):

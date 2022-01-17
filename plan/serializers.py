@@ -8,7 +8,7 @@ class PlanSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = Plan
-        exclude = ['price', 'intro_img_url']
+        exclude = ['price', 'main_img_url']
 
 
 class PlanDetailSerializer(serializers.ModelSerializer):
@@ -22,7 +22,7 @@ class OwnPlanSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = Plan
-        fields = ['id', 'name', 'tags', 'writer_name', 'writer_img', 'writer_intro', 'intro_img_url', 'desc']
+        fields = ['id', 'name', 'tags', 'writer_name', 'writer_img', 'writer_intro', 'main_img_url', 'desc']
 
 
 class UserPlanSerializer(serializers.ModelSerializer):

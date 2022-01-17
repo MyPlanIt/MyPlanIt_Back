@@ -20,20 +20,20 @@ def get_user(request):
 class PlanTodoView(APIView):
     def get(self, request, date):  # pk의 default = 현재 날짜 값 (ex, 20-01-11)
         User_plan_todo.objects.all().order_by('plan_id', 'plan_todo_id')  # plan의 id값으로 1차 정렬 -> plan_todo_id로 2차 정렬
+
         try:
-            plan_querysets = User_Plan.objects.filter(user=get_user(request))  # User_Plan에서 user가 갖고 있는 plans들 가져오기
+            plan_querysets = User_Plan.objects.filter(user=get_user(request), register_flag=True)  # User_Plan에서 user가 등록한 plans들 가져오기 (register_flag = True)
 
             data = {}
 
             for plan_queryset in plan_querysets:  # 하나의 플랜에서 플랜 투두들 가져오기 위함
                 plan = plan_queryset.plan  # 플랜 가져오기
-                plan_todo_querysets = User_plan_todo.objects.filter(user=get_user(request), date=date, plan=plan)  # user_plan_todo모델에서 해당 유저, 해당 날짜, 해당 플랜의 플랜투두들 가져오기
+                plan_todo_querysets = User_plan_todo.objects.filter(user=get_user(request), plan=plan, date=date)  # user_plan_todo모델에서 해당 유저, 해당 날짜, 해당 플랜의 플랜투두들 가져오기
                 serializer = UserPlanTodoSerializer(plan_todo_querysets, many=True)  # serializer를 이용해 plan todo들을 가공된 Json data로 변환
                 rate = plan_queryset.rate  # 플랜의 달성률 가져오기
                 serializer_data = list(serializer.data)
                 serializer_data.insert(0, {'달성률': rate})
-                data[
-                    plan_queryset.plan.name] = serializer_data  # 딕셔너리 형태로 따로 만들기 (key: 플랜 이름, value: [ { 달성률 }, { 플랜투두1 }, { 플랜투두2 }, ... ])
+                data[plan_queryset.plan.name] = serializer_data  # 딕셔너리 형태로 따로 만들기 (key: 플랜 이름, value: [ { 달성률 }, { 플랜투두1 }, { 플랜투두2 }, ... ])
 
             return Response(data, status=status.HTTP_200_OK)
         except:
@@ -42,9 +42,9 @@ class PlanTodoView(APIView):
 
 # 플랜 투두 완료 기능 (체크 기능)
 class CheckPlanTodoView(APIView):
-    def post(self, request, plan_id, plan_todo_id):
+    def post(self, request, plan_id, id):
         try:
-            user_plan_todo = get_object_or_404(User_plan_todo, id=plan_todo_id)
+            user_plan_todo = get_object_or_404(User_plan_todo, id=id)
 
             if user_plan_todo.finish_flag == 0:  # 미완료 -> 완료인 경우
                 user_plan_todo.finish_flag = 1
@@ -70,9 +70,9 @@ class CheckPlanTodoView(APIView):
 
 # 플랜 투두 내일하기 기능
 class DelayPlanTodoView(APIView):
-    def post(self, request, plan_todo_id):
+    def post(self, request, id):
         try:
-            user_plan_todo = get_object_or_404(User_plan_todo, id=plan_todo_id)
+            user_plan_todo = get_object_or_404(User_plan_todo, id=id)
             user_plan_todo.date += datetime.timedelta(days=1)  # 플랜 투두 날짜 + 1
             user_plan_todo.save()
             return Response({"message": "success"}, status=status.HTTP_200_OK)
@@ -96,13 +96,13 @@ class PlanTodosView(APIView):
 
 # 투두 하나 클릭 시 세부 정보 조회
 class DetailTodoView(APIView):
-    def get(self, request, plan_todo_id):
+    def get(self, request, todo_id):
         try:
-            plan_todo = get_object_or_404(Plan_todo, id=plan_todo_id)
+            plan_todo = get_object_or_404(Plan_todo, id=todo_id)
             if not plan_todo.media_flag:  # 이미지만 있는 경우
                 return Response({"image_url": plan_todo.img_url}, status=status.HTTP_200_OK)
             else:
-                media_querysets = Plan_todo_video.objects.filter(plan_todo_id=plan_todo_id)
+                media_querysets = Plan_todo_video.objects.filter(plan_todo_id=todo_id)
                 serializer = TodoMediaSerializer(media_querysets, many=True)
                 return Response({"media": serializer.data}, status=status.HTTP_200_OK)
         except:

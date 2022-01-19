@@ -141,7 +141,7 @@ CORS_ORIGIN_REGEX_WHITELIST = (
     'https://myplanit.link',
 )
 
-CORS_ALLOWED_ORIGINS = [
+CORS_ALLOWED_ORIGINS = (
     "http://localhost:8080",
     "http://localhost:3000",
     "http://localhost",
@@ -150,7 +150,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://0.0.0.0:3000",
     "http://my-plan-it-front.vercel.app",
     "https://my-plan-it-front.vercel.app"
-]
+)
 
 # simple_JWT 추가
 REST_FRAMEWORK = {

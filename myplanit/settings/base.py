@@ -11,6 +11,7 @@ import os
 import environ
 import pymysql
 import datetime
+from corsheaders.defaults import default_headers
 
 pymysql.install_as_MySQLdb()
 
@@ -55,14 +56,14 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'myplanit.urls'
@@ -133,6 +134,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
+
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://localhost:3000",
@@ -140,9 +143,14 @@ CORS_ALLOWED_ORIGINS = [
     "https://localhost:3000",
     "https://127.0.0.1:3000",
     "https://0.0.0.0:3000",
+    "https://myplanit.link",
     "http://my-plan-it-front.vercel.app",
     "https://my-plan-it-front.vercel.app"
 ]
+
+CORS_ALLOW_HEADERS = (
+    'authorization',
+)
 
 # simple_JWT 추가
 REST_FRAMEWORK = {

@@ -86,6 +86,10 @@ class LoginView(APIView):
             )
             response.set_cookie("access_token", access_token, httponly=True)
             response.set_cookie("refresh_token", refresh_token, httponly=True)
+            response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+            response["Access-Control-Allow-Origin"] = "*"
+            response["Acess-Control-Max-Age"] = "1000"
+            response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
             return response
         else:  # 그 외
             return Response(

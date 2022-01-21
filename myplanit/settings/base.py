@@ -159,7 +159,8 @@ CORS_ALLOW_HEADERS = (
     'accept',
     'origin',
     'authorization',
-    'refresh_token'
+    'refresh_token',
+    'access_token'
 )
 
 # simple_JWT 추가

@@ -1,12 +1,14 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.views import APIView
 from .models import Plan, User_Plan, Plan_todo, User_plan_todo
 from .serializers import PlanSerializer, PlanDetailSerializer, UserPlanSerializer
 from jwt_token import jwt_token
 import datetime
 from todo.views import get_user
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 def get_user_and_plan(request, pk):
@@ -18,7 +20,11 @@ def get_user_and_plan(request, pk):
 
 # 전체 플랜 조회
 class PlanView(APIView):
+    permission_classes = (permissions.BasePermission,)
+
     def get(self, request):
+        print(request.user)
+        print(request.user.is_authenticated)
         routine = Plan.objects.filter(category="Routine")
         growth = Plan.objects.filter(category="Growth")
 
@@ -32,6 +38,8 @@ class PlanView(APIView):
 
 # 특정 플랜 조회
 class PlanDetailView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     def get(self, request, pk, format=None):
         plan = get_object_or_404(Plan, id=pk)
         serializer = PlanDetailSerializer(plan)
@@ -40,6 +48,8 @@ class PlanDetailView(APIView):
 
 # 특정 플랜 구매
 class BuyPlanView(APIView):
+    permission_classes = (permissions.BasePermission, )
+
     def post(self, request, pk):
 
         try:
@@ -66,6 +76,8 @@ class BuyPlanView(APIView):
 
 # 특정 플랜 찜하기
 class WishPlanView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
     def post(self, request, pk):
 
         try:
@@ -93,6 +105,8 @@ class WishPlanView(APIView):
 
 # 찜한 플랜 조회
 class WishPlansView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
     def get(self, request):
         try:
             user_plan = User_Plan.objects.filter(user=get_user(request)).filter(wish_flag=True).order_by('-created_at')
@@ -109,6 +123,8 @@ class WishPlansView(APIView):
 
 # 구매한 플랜 조회
 class BuyPlansView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
     def get(self, request):
         try:
             user_plan = User_Plan.objects.filter(user=get_user(request)).filter(own_flag=True).order_by('-updated_at')
@@ -125,6 +141,8 @@ class BuyPlansView(APIView):
 
 # 이용 중 플랜 조회
 class RegisteredPlanView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
     def get(self, request):
         try:
             user_plan = User_Plan.objects.filter(user=get_user(request)).filter(register_flag=True).order_by('-updated_at')
@@ -141,6 +159,8 @@ class RegisteredPlanView(APIView):
 
 # 플랜 구매 -> 등록하기 (플랜에 해당하는 투두들 user_plan_todo db에 넣기)
 class RegisterPlanView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
     def post(self, request, pk):  # pk : plan의 id값
         try:
             plan = get_object_or_404(Plan, id=pk)
@@ -164,6 +184,8 @@ class RegisterPlanView(APIView):
 
 # 등록한 플랜 투두에서 제거하기 (User_Plan과 User_Plan_Todo에서 제거하기)
 class DeletePlanView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
     def post(self, request, pk):  # pk : plan의 id값
         try:
             plan = get_object_or_404(Plan, id=pk)  # 지울 plan 가져오기

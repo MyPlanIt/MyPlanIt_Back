@@ -1,16 +1,21 @@
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth import authenticate, login
 
 from .models import User
 from .serializers import UserSerializer
 from jwt_token.jwt_token import get_token
 
 
+
 # 회원가입
 class SignupView(APIView):
+    permission_classes = (permissions.AllowAny, )
+
     def post(self, request):
         try:
             email = request.data['email']
@@ -19,6 +24,7 @@ class SignupView(APIView):
             username = request.data['username']
             email_agree = request.data['email_agree']
             sns_agree = request.data['sns_agree']
+            print(email, password, realname, username, email_agree, sns_agree)
 
             if User.objects.filter(email=email).exists() and User.objects.filter(username=username).exists():
                 return Response({"message": "email과 username이 모두 존재합니다."}, status=status.HTTP_207_MULTI_STATUS)
@@ -53,6 +59,8 @@ class SignupView(APIView):
 
 # 로그인
 class LoginView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
     def post(self, request):
         email = request.data['email']
         password = request.data['password']
@@ -68,6 +76,14 @@ class LoginView(APIView):
             return Response(
                 {"message": "비밀번호가 틀렸습니다."}, status=status.HTTP_401_UNAUTHORIZED
             )
+        ruser = authenticate(request, email=email, password=password)
+        print(ruser)
+        login(request, user)
+        #user = authenticate(request, email=email, password=password)
+        #if user is not None:
+        #    login(request, user)
+        print(request.user)
+        print(request.user.is_authenticated)
 
         if user is not None:  # 모두 성공 시
             token = TokenObtainPairSerializer.get_token(user)
@@ -86,10 +102,6 @@ class LoginView(APIView):
             )
             response.set_cookie("access_token", access_token, httponly=True)
             response.set_cookie("refresh_token", refresh_token, httponly=True)
-            response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-            response["Access-Control-Allow-Origin"] = "*"
-            response["Acess-Control-Max-Age"] = "1000"
-            response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
             return response
         else:  # 그 외
             return Response(

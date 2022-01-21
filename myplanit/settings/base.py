@@ -152,6 +152,16 @@ CORS_ALLOWED_ORIGINS = (
     "https://my-plan-it-front.vercel.app"
 )
 
+CORS_ALLOW_HEADERS = (
+    'content-disposition',
+    'accept-encoding',
+    'content-type',
+    'accept',
+    'origin',
+    'authorization',
+    'refresh_token'
+)
+
 # simple_JWT 추가
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

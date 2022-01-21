@@ -12,6 +12,8 @@ import environ
 import pymysql
 import datetime
 
+AUTH_USER_MODEL = 'accounts.User'
+
 pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -86,6 +88,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'myplanit.wsgi.application'
 
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -156,7 +163,10 @@ CORS_ALLOWED_ORIGINS = (
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+            'rest_framework.permissions.IsAuthenticated',
+    ),
 }
 
 # JWT 세팅

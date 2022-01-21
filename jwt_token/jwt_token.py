@@ -13,22 +13,22 @@ def get_user(pk):
 
 def get_token(request):
     try:
-        access_token = request.COOKIES['access_token']
+        access_token = request.data['access_token']
         payload = jwt.decode(access_token, env('DJANGO_SECRET_KEY'), algorithms=['HS256'])
         pk = payload.get('user_id')
         user = get_user(pk)
-        refresh_token = request.COOKIES['refresh_token']
+        refresh_token = request.data['refresh_token']
         return user, access_token, refresh_token
 
     # 토큰 만료시 토큰 갱신
     except jwt.exceptions.ExpiredSignatureError:
         try:
             print("access token 만료")
-            serializer = TokenRefreshSerializer(data={'refresh': request.COOKIES.get('refresh_token', None)})
+            serializer = TokenRefreshSerializer(data={'refresh': request.data['refresh_token']})
 
             if serializer.is_valid(raise_exception=True):
                 access_token = serializer.validated_data['access']
-                refresh_token = request.COOKIES.get('refresh_token', None)
+                refresh_token = request.data['refresh_token']
                 payload = jwt.decode(access_token, env('DJANGO_SECRET_KEY'), algorithms=['HS256'])
                 pk = payload.get('user_id')
                 user = get_user(pk)

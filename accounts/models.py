@@ -1,7 +1,9 @@
-from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from multiselectfield import MultiSelectField
 from django.db import models
 from accounts.util import choices
+from django.contrib.auth.models import (
+    BaseUserManager, AbstractBaseUser, PermissionsMixin
+)
 
 
 class UserManager(BaseUserManager):
@@ -20,12 +22,14 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email=None, password=None, realname=None, username=None, **extra_fields):
+    def create_superuser(self, email=None, password=None, realname=None, username=None, email_agree=None, sns_agree=None):
         superuser = self.create_user(
             email=email,
             realname=realname,
             password=password,
             username=username,
+            email_agree=email_agree,
+            sns_agree=sns_agree
         )
 
         superuser.is_staff = True
@@ -35,7 +39,7 @@ class UserManager(BaseUserManager):
         return superuser
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=30, unique=True)
     realname = models.CharField(max_length=30)
     email_agree = models.BooleanField(default=False)
@@ -49,8 +53,8 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'id'
-    REQUIRED_FIELDS = ['password', 'email', 'realname', 'username', 'email_agree', 'sns_agree']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['password', 'realname', 'username', 'email_agree', 'sns_agree']
 
     class Meta:
         managed = True
@@ -62,6 +66,3 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return self.is_superuser
-
-    def __str__(self):
-        return self.username

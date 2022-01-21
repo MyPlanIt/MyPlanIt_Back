@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.views import APIView
 from plan.models import Plan, User_Plan, Plan_todo, User_plan_todo, Plan_todo_video
 from .models import User_personal_todo
@@ -18,6 +18,8 @@ def get_user(request):
 
 # 해당 날짜의 플랜 투두 조회
 class PlanTodoView(APIView):
+    permission_classes = (permissions.BasePermission,)
+
     def get(self, request, date):  # pk의 default = 현재 날짜 값 (ex, 20-01-11)
         User_plan_todo.objects.all().order_by('plan_id', 'plan_todo_id')  # plan의 id값으로 1차 정렬 -> plan_todo_id로 2차 정렬
 
@@ -42,6 +44,8 @@ class PlanTodoView(APIView):
 
 # 플랜 투두 완료 기능 (체크 기능)
 class CheckPlanTodoView(APIView):
+    permission_classes = (permissions.BasePermission,)
+
     def post(self, request, plan_id, id):
         try:
             user_plan_todo = get_object_or_404(User_plan_todo, id=id)
@@ -70,6 +74,8 @@ class CheckPlanTodoView(APIView):
 
 # 플랜 투두 내일하기 기능
 class DelayPlanTodoView(APIView):
+    permission_classes = (permissions.BasePermission,)
+
     def post(self, request, id):
         try:
             user_plan_todo = get_object_or_404(User_plan_todo, id=id)
@@ -82,6 +88,8 @@ class DelayPlanTodoView(APIView):
 
 # 플랜 클릭 시 전체 투두 조회 기능
 class PlanTodosView(APIView):
+    permission_classes = (permissions.BasePermission,)
+
     def get(self, request, plan_id):
         try:
             plan = get_object_or_404(Plan, id=plan_id)
@@ -96,6 +104,8 @@ class PlanTodosView(APIView):
 
 # 투두 하나 클릭 시 세부 정보 조회
 class DetailTodoView(APIView):
+    permission_classes = (permissions.BasePermission,)
+
     def get(self, request, todo_id):
         try:
             plan_todo = get_object_or_404(Plan_todo, id=todo_id)
@@ -111,6 +121,8 @@ class DetailTodoView(APIView):
 
 # 개인 투두 조회, 추가
 class MyTodoVIew(APIView):
+    permission_classes = (permissions.BasePermission,)
+
     def get(self, request, date):
         try:
             user_todos = User_personal_todo.objects.filter(user=get_user(request)).filter(date=date).order_by('-id')
@@ -136,6 +148,8 @@ class MyTodoVIew(APIView):
 
 # 개인 투두 수정 기능
 class EditMyTodoView(APIView):
+    permission_classes = (permissions.BasePermission,)
+
     # 개인 투두 완료 체크
     def post(self, request, id):
         try:
@@ -179,6 +193,8 @@ class EditMyTodoView(APIView):
 
 # 개인 투두 내일하기 기능
 class DelayMyTodoView(APIView):
+    permission_classes = (permissions.BasePermission,)
+
     def post(self, request, id):
         try:
             user_todo = get_object_or_404(User_personal_todo, user=get_user(request), id=id)

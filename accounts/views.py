@@ -1,4 +1,3 @@
-from django.contrib.auth import login
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -85,7 +84,6 @@ class LoginView(APIView):
                 },
                 status=status.HTTP_200_OK
             )
-            login(request, user)
             response.set_cookie("access_token", access_token, httponly=True)
             response.set_cookie("refresh_token", refresh_token, httponly=True)
             response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"

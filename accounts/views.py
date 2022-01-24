@@ -47,7 +47,7 @@ class SignupView(APIView):
             )
             user.set_password(password)
             user.save()
-            return Response({"message": "회원가입 완료"}, status=status.HTTP_200_OK)
+            return Response({"message": "회원가입 완료"}, status=status.HTTP_201_CREATED)
 
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)

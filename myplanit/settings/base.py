@@ -12,6 +12,8 @@ import environ
 import pymysql
 import datetime
 
+AUTH_USER_MODEL = 'accounts.User'
+
 pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -42,10 +44,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
     'rest_framework',
     'corsheaders',
     'multiselectfield',
-    'rest_framework_simplejwt',
     'taggit',
     'django_filters',
     'accounts',
@@ -67,6 +70,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'myplanit.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -84,6 +88,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'myplanit.wsgi.application'
+
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 
 # Password validation
@@ -152,48 +161,26 @@ CORS_ALLOWED_ORIGINS = (
     "https://my-plan-it-front.vercel.app"
 )
 
-CORS_ALLOW_HEADERS = (
-    'content-disposition',
-    'accept-encoding',
-    'content-type',
-    'accept',
-    'origin',
-    'authorization',
-    'refresh_token',
-    'access_token'
-)
 
-# simple_JWT 추가
+# JWT permission, authentication 세팅
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
+    ),
 }
 
+
 # JWT 세팅
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=30),
-    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=100),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': False,
-    'UPDATE_LAST_LOGIN': False,
-
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': env('DJANGO_SECRET_KEY'),
-    'VERIFYING_KEY': None,
-    'AUDIENCE': None,
-    'ISSUER': None,
-    'JWK_URL': None,
-    'LEEWAY': 0,
-
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
-
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_TYPE_CLAIM': 'token_type',
-
-    'JTI_CLAIM': 'jti',
+JWT_AUTH = {
+    'JWT_SECRET_KEY': SECRET_KEY,
+    'JWT_ALGORITHM': 'HS256',  # 암호화 알고리즘
+    'JWT_ALLOW_REFRESH': True, # jwt 갱신 여부
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=15), # jwt 토큰 유효기간
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=30), # jwt 토큰 갱신 유효기간
+    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
 }

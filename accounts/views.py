@@ -1,16 +1,26 @@
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth import authenticate, get_user_model
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.contrib.auth.models import update_last_login
 
-from .models import User
-from .serializers import UserSerializer
-from jwt_token.jwt_token import get_token
+# JWT 세팅
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework_jwt.settings import api_settings
+
+User = get_user_model()
+
+# JWT 사용을 위한 설정
+JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
+JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 
 # 회원가입
 class SignupView(APIView):
+    permission_classes = (AllowAny, )
+
     def post(self, request):
         try:
             email = request.data['email']
@@ -37,15 +47,7 @@ class SignupView(APIView):
             )
             user.set_password(password)
             user.save()
-
-            # 회원가입 이후 첫 토큰 발행
-            token = TokenObtainPairSerializer.get_token(user)  # refresh 토큰 가져오기
-            refresh_token = str(token)
-            access_token = str(token.access_token)  # access 토큰 가져오기
-            response = Response({"message": "회원가입 완료"}, status=status.HTTP_201_CREATED)
-            response.set_cookie('access_token', access_token)
-            response.set_cookie('refresh_token', refresh_token)
-            return response
+            return Response({"message": "회원가입 완료"}, status=status.HTTP_200_OK)
 
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -53,7 +55,9 @@ class SignupView(APIView):
 
 # 로그인
 class LoginView(APIView):
-    def post(self, request):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, format=None):
         email = request.data['email']
         password = request.data['password']
 
@@ -69,53 +73,36 @@ class LoginView(APIView):
                 {"message": "비밀번호가 틀렸습니다."}, status=status.HTTP_401_UNAUTHORIZED
             )
 
-        if user is not None:  # 모두 성공 시
-            token = TokenObtainPairSerializer.get_token(user)
-            refresh_token = str(token)
-            access_token = str(token.access_token)
-            response = Response(
-                {
-                    "user": UserSerializer(user).data,
-                    "message": "login success",
-                    "jwt_token": {
-                        "access_token": access_token,
-                        "refresh_token": refresh_token,
-                    },
-                },
-                status=status.HTTP_200_OK
-            )
-            response.set_cookie("access_token", access_token, httponly=True)
-            response.set_cookie("refresh_token", refresh_token, httponly=True)
-            response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-            response["Access-Control-Allow-Origin"] = "*"
-            response["Acess-Control-Max-Age"] = "1000"
-            response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
-            return response
-        else:  # 그 외
-            return Response(
-                data={"message": "로그인에 실패하였습니다"}, status=status.HTTP_404_NOT_FOUND
-            )
+        try:
+            # email, password 모두 만족 시
+            user_email = authenticate(email=email, password=password)
+            user = User.objects.get(email=user_email)
+
+            payload = JWT_PAYLOAD_HANDLER(user)
+            jwt_token = JWT_ENCODE_HANDLER(payload)
+            update_last_login(None, user)
+            data = {'token': jwt_token}
+            return Response(data, status=status.HTTP_200_OK)
+
+        except:  # 그 외
+            return Response(data={"message": "로그인에 실패하였습니다"}, status=status.HTTP_404_NOT_FOUND)
 
 
 # 온보딩
 class OnboardingView(APIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JSONWebTokenAuthentication,)
+
     def post(self, request):
         jobs = request.data.get('jobs')
         interests = request.data.get('interests')
 
         try:
-            res = list(get_token(request))  # 토큰 함수 호출 -> user, access, refresh 토큰 반환함
-            user = res[0]
-            access_token = res[1]
-            refresh_token = res[2]
-            response = Response(data={"message": "success"}, status=status.HTTP_200_OK)
-            response.set_cookie('access_token', access_token)
-            response.set_cookie('refresh_token', refresh_token)
-
+            user = request.user
             user.jobs = jobs
             user.interests = interests
             user.save()
-            return response
+            return Response({"message": "success"}, status=status.HTTP_200_OK)
 
-        except:  # get_token 함수가 None 반환 시
+        except:
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)

@@ -179,8 +179,8 @@ REST_FRAMEWORK = {
 JWT_AUTH = {
     'JWT_SECRET_KEY': SECRET_KEY,
     'JWT_ALGORITHM': 'HS256',  # 암호화 알고리즘
-    'JWT_ALLOW_REFRESH': True, # jwt 갱신 여부
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=15), # jwt 토큰 유효기간
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=30), # jwt 토큰 갱신 유효기간
+    'JWT_ALLOW_REFRESH': True,  # jwt 갱신 여부
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=15),  # jwt 토큰 유효기간
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=30),  # jwt 토큰 갱신 유효기간
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
 }

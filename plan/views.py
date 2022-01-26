@@ -129,7 +129,7 @@ class BuyPlansView(APIView):
             user_plan = User_Plan.objects.filter(user=request.user).filter(own_flag=True).order_by('-updated_at')
 
             if user_plan.exists():
-                return Response(UserPlanSerializer(user_plan, many=True).data, status=status.HTTP_200_OK)
+                return Response({"plans": UserPlanSerializer(user_plan, many=True).data}, status=status.HTTP_200_OK)
 
             else:
                 return Response({"message": "소유한 플랜이 없습니다."}, status=status.HTTP_200_OK)

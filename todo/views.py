@@ -109,11 +109,11 @@ class DetailTodoView(APIView):
         try:
             plan_todo = get_object_or_404(Plan_todo, id=todo_id)
             if not plan_todo.media_flag:  # 이미지만 있는 경우
-                return Response({"image_url": plan_todo.img_url}, status=status.HTTP_200_OK)
+                return Response({"plan_todo_name": plan_todo.name, "image_url": plan_todo.img_url}, status=status.HTTP_200_OK)
             else:
                 media_querysets = Plan_todo_video.objects.filter(plan_todo_id=todo_id)
                 serializer = TodoMediaSerializer(media_querysets, many=True)
-                return Response({"media": serializer.data}, status=status.HTTP_200_OK)
+                return Response({"plan_todo_name": plan_todo.name, "media": serializer.data}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "error"}, status=status.HTTP_400_BAD_REQUEST)
 

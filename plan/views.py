@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .models import Plan, User_Plan, Plan_todo, User_plan_todo
-from .serializers import PlanSerializer, PlanDetailSerializer, UserPlanSerializer
+from .serializers import PlanSerializer, PlanDetailSerializer, UserPlanSerializer, OwnPlanSerializer
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt.settings import api_settings
@@ -110,7 +110,7 @@ class WishPlansView(APIView):
             user_plan = User_Plan.objects.filter(user=request.user).filter(wish_flag=True).order_by('-created_at')
 
             if user_plan.exists():
-                return Response(UserPlanSerializer(user_plan, many=True).data, status=status.HTTP_200_OK)
+                return Response({"wish_plans": UserPlanSerializer(user_plan, many=True).data}, status=status.HTTP_200_OK)
 
             else:
                 return Response({"message": "찜한 플랜이 없습니다."}, status=status.HTTP_200_OK)
@@ -129,7 +129,7 @@ class BuyPlansView(APIView):
             user_plan = User_Plan.objects.filter(user=request.user).filter(own_flag=True).order_by('-updated_at')
 
             if user_plan.exists():
-                return Response({"plans": UserPlanSerializer(user_plan, many=True).data}, status=status.HTTP_200_OK)
+                return Response({"buy_plans": UserPlanSerializer(user_plan, many=True).data}, status=status.HTTP_200_OK)
 
             else:
                 return Response({"message": "소유한 플랜이 없습니다."}, status=status.HTTP_200_OK)
@@ -148,7 +148,7 @@ class RegisteredPlanView(APIView):
             user_plan = User_Plan.objects.filter(user=request.user).filter(register_flag=True).order_by('-updated_at')
 
             if user_plan.exists():
-                return Response(UserPlanSerializer(user_plan, many=True).data, status=status.HTTP_200_OK)
+                return Response({"register_plans": UserPlanSerializer(user_plan, many=True).data}, status=status.HTTP_200_OK)
 
             else:
                 return Response({"message": "이용 중인 플랜이 없습니다."}, status=status.HTTP_200_OK)

@@ -126,7 +126,8 @@ class MyTodoVIew(APIView):
     def get(self, request, date):
         try:
             user_todos = User_personal_todo.objects.filter(user=request.user).filter(date=date).order_by('-id')
-            return Response(UserPersonalTodoSerializer(user_todos, many=True).data, status=status.HTTP_200_OK)
+            data = UserPersonalTodoSerializer(user_todos, many=True).data
+            return Response({"personal_todos": data}, status=status.HTTP_200_OK)
 
         except:
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)

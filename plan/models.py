@@ -25,7 +25,7 @@ class Plan(models.Model):
 
 class Plan_todo(models.Model):
     name = models.CharField(max_length=30)
-    img_url = models.URLField()
+    img_url = models.URLField(blank=True, null=True)
     media_flag = models.BooleanField(default=0)
     date = models.PositiveIntegerField(default=0)
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE)

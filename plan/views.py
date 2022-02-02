@@ -21,10 +21,8 @@ class PlanView(APIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get(self, request):
-        print(request.user)
-        print(request.user.is_authenticated)
-        routine = Plan.objects.filter(category="Routine")
-        growth = Plan.objects.filter(category="Growth")
+        routine = Plan.objects.filter(category="Routine").order_by('-id') # id 거꾸로 정렬
+        growth = Plan.objects.filter(category="Growth").order_by('-id') # id 거꾸로 정렬
 
         routine_serializer = PlanSerializer(routine, many=True).data
         growth_serializer = PlanSerializer(growth, many=True).data

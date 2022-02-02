@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=30)),
-                ('img_url', models.URLField()),
+                ('img_url', models.URLField(blank=True, null=True)),
                 ('media_flag', models.BooleanField(default=0)),
                 ('date', models.PositiveIntegerField(default=0)),
                 ('plan', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='plan.plan')),

@@ -4,7 +4,7 @@
 
 |                            서수경                            |                           이수진                            |
 | :----------------------------------------------------------: | :---------------------------------------------------------: |
-| ![KakaoTalk_20220110_063146959](D:\Users\SukyeongSeo\Desktop\바탕 화면\KakaoTalk_20220110_063146959.png) |                 수진언니으 미모지 넣기 헤헤                 |
+|![수경](https://user-images.githubusercontent.com/80563849/152308927-2e1660e8-5126-45fe-ae9f-2588e951ebf4.png)|수진언니으 미모지 넣기 헤헤                 |
 |         [Setting] 초기 세팅<br />[Plan]<br />[Todo]          | [Accounts] 회원가입, 로그인, 온보딩<br />[Plan]<br />[Todo] |
 
 
@@ -22,9 +22,9 @@
 ![img/architecture.png](img/architecture.png)
 
 
-##  🌕 기술 스택
+## 🌕 기술 스택
 
-|                  |                              |
+| **section**       | Tech        |
 | ---------------- | ---------------------------- |
 | **인프라**       | Docker, Github action        |
 | **언어**         | Python                       |
@@ -77,9 +77,11 @@ MyPlanIt_Back
 ```
 
 
-## 🌓 팀원 역할분담
+## 🌓 상세 역할분담
 
 ![img/role.png](img/role.png)
+
+#### [🔗 Related issues](https://github.com/MyPlanIt/MyPlanIt_Back/issues/5)
 
 
 ## 🌒 ERD

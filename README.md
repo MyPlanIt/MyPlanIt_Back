@@ -4,7 +4,7 @@
 
 |                            서수경                            |                           이수진                            |
 | :----------------------------------------------------------: | :---------------------------------------------------------: |
-|![수경](https://user-images.githubusercontent.com/80563849/152308927-2e1660e8-5126-45fe-ae9f-2588e951ebf4.png)|수진언니으 미모지 넣기 헤헤                 |
+|![수경](https://user-images.githubusercontent.com/80563849/152312043-4fe26811-badc-4e6e-8b5c-f2db90bedf25.png)|수진언니으 미모지 넣기 헤헤                 |
 |         [Setting] 초기 세팅<br />[Plan]<br />[Todo]          | [Accounts] 회원가입, 로그인, 온보딩<br />[Plan]<br />[Todo] |
 
 

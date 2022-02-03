@@ -5,7 +5,7 @@
 |                            서수경                            |                           이수진                            |
 | :----------------------------------------------------------: | :---------------------------------------------------------: |
 |![수경](https://user-images.githubusercontent.com/80563849/152312043-4fe26811-badc-4e6e-8b5c-f2db90bedf25.png)|수진언니으 미모지 넣기 헤헤                 |
-|         [Setting] 초기 세팅<br />[Plan]<br />[Todo]          | [Accounts] 회원가입, 로그인, 온보딩<br />[Plan]<br />[Todo] |
+| [Setting] Django, EC2, RDS, Docker, Github Actions, S3 세팅<br />[Plan] 플랜 구매, 플랜 찜하기, 구매 플랜 조회, 찜한 플랜 조회<br />[Todo] 개인투두 조회, 추가, 완료, 미루기, 삭제, 수정<br /> [Etc] 리팩토링, 코드리뷰          | [Accounts] 회원가입, 로그인, 온보딩<br />[Plan]<br />[Todo]<br /> [Etc] 리팩토링, 코드리뷰 |
   
 
 ## 🌗 API 명세서

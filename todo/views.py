@@ -6,14 +6,12 @@ from plan.models import Plan, User_Plan, Plan_todo, User_plan_todo, Plan_todo_vi
 from .models import User_personal_todo
 from .serializers import UserPlanTodoSerializer, PlanTodoSerializer, TodoMediaSerializer, UserPersonalTodoSerializer
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 import datetime
 
 
 # 해당 날짜의 플랜 투두 조회
 class PlanTodoView(APIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
 
     def get(self, request, date):  # pk의 default = 현재 날짜 값 (ex, 2022-01-11)
         User_plan_todo.objects.all().order_by('plan_id', 'plan_todo_id')  # plan의 id값으로 1차 정렬 -> plan_todo_id로 2차 정렬
@@ -41,7 +39,6 @@ class PlanTodoView(APIView):
 # 플랜 투두 완료 기능 (체크 기능)
 class CheckPlanTodoView(APIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
 
     def post(self, request, plan_id, id):
         try:
@@ -72,7 +69,6 @@ class CheckPlanTodoView(APIView):
 # 플랜 투두 내일하기 기능
 class DelayPlanTodoView(APIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
 
     def post(self, request, id):
         try:
@@ -103,7 +99,6 @@ class PlanTodosView(APIView):
 # 투두 하나 클릭 시 세부 정보 조회
 class DetailTodoView(APIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
 
     def get(self, request, todo_id):
         try:
@@ -121,7 +116,6 @@ class DetailTodoView(APIView):
 # 개인 투두 조회, 추가
 class MyTodoVIew(APIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
 
     def get(self, request, date):
         try:
@@ -149,7 +143,6 @@ class MyTodoVIew(APIView):
 # 개인 투두 수정 기능
 class EditMyTodoView(APIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
 
     # 개인 투두 완료 체크
     def post(self, request, id):
@@ -194,7 +187,6 @@ class EditMyTodoView(APIView):
 # 개인 투두 내일하기 기능
 class DelayMyTodoView(APIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
 
     def post(self, request, id):
         try:

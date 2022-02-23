@@ -41,61 +41,59 @@ class HelloView(APIView):
 
 
 # code 요청 -> 프론트 부분
-# @api_view(['GET'])
-# @permission_classes([AllowAny])
-# def kakao_login(request):
-#     app_rest_api_key = env('REST_API_KEY')
-#     redirect_uri = env('REDIRECT_URI')
-#     return redirect(
-#         f"https://kauth.kakao.com/oauth/authorize?client_id={app_rest_api_key}&redirect_uri={redirect_uri}&response_type=code"
-#     )
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def kakao_login(request):
+    app_rest_api_key = env('REST_API_KEY')
+    redirect_uri = env('REDIRECT_URI')
+    return redirect(
+        f"https://kauth.kakao.com/oauth/authorize?client_id={app_rest_api_key}&redirect_uri={redirect_uri}&response_type=code"
+    )
 
 
-class kakaoLoginView(APIView):
-    def get(self, request):
-        app_rest_api_key = env('REST_API_KEY')
-        redirect_uri = "https://www.myplanit.site/login/kakao/callback"
-        client_secret = env('SECRET')
+# 카카오 회원가입 & 로그인
+def kakao_callback(request):
+    app_rest_api_key = env('REST_API_KEY')
+    redirect_uri = "https://www.myplanit.link/login/kakao/callback"
+    client_secret = env('SECRET')
 
-        # code = request.GET.get('code')
-        code = request.data['code']
-        print(code)
-        token_req = requests.get(
-            f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={app_rest_api_key}&redirect_uri={redirect_uri}&code={code}"
-        )
-        token_req_json = token_req.json()
-        access_token = token_req_json.get("access_token")
-        refresh_token = token_req_json.get("refresh_token")
-        print("access_token: ", access_token)
-        print("refresh_token: ", refresh_token)
+    code = request.GET.get('code')
+    print(code)
+    token_req = requests.get(
+        f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={app_rest_api_key}&redirect_uri={redirect_uri}&code={code}"
+    )
+    token_req_json = token_req.json()
+    access_token = token_req_json.get("access_token")
+    refresh_token = token_req_json.get("refresh_token")
+    print("access_token: ", access_token)
+    print("refresh_token: ", refresh_token)
 
-        kakao_api_response = requests.post(
-            "https://kapi.kakao.com/v2/user/me",
-            headers={"Authorization": f"Bearer {access_token}"},
-        )
-        kakao_api_response = kakao_api_response.json()
-        user_id = kakao_api_response.get('id')
-        # if user_id is None:
-        #    return Response({"message": "error"}, status=status.HTTP_400_BAD_REQUEST)
-        username = f'user{user_id}'
+    kakao_api_response = requests.post(
+        "https://kapi.kakao.com/v2/user/me",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    kakao_api_response = kakao_api_response.json()
+    user_id = kakao_api_response.get('id')
+    #if user_id is None:
+    #    return Response({"message": "error"}, status=status.HTTP_400_BAD_REQUEST)
+    username = f'user{user_id}'
 
-        realname = kakao_api_response.get('properties').get('nickname')
-        print(username, realname)
+    realname = kakao_api_response.get('properties').get('nickname')
+    print(username, realname)
 
-        try:
-            user = User.objects.get(username=username)
-            print("기존 유저")
+    try:
+        user = User.objects.get(username=username)
+        print("기존 유저")
 
-        except:
-            user = User(username=username, realname=realname)
-            user = user.save()
-            user = User.objects.get(username=username)
-            print("새로운 유저")
+    except:
+        user = User(username=username, realname=realname)
+        user = user.save()
+        user = User.objects.get(username=username)
+        print("새로운 유저")
 
-        response = {'username': username, 'token': get_tokens_for_user(user)}
-        print(response)
-        return Response(response, status=200)
-
+    response = {'username': username, 'token': get_tokens_for_user(user)}
+    print(response)
+    return JsonResponse(response, status=200)
 
 
 # 로그아웃 -> 사용자의 access_token, refresh_token 모두 만료시킴

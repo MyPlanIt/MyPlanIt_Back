@@ -1,7 +1,6 @@
 asgiref==3.4.1
 certifi==2021.10.8
 charset-normalizer==2.0.12
-cryptography==36.0.1
 defusedxml==0.7.1
 Django==3.1.14
 django-allauth==0.48.0

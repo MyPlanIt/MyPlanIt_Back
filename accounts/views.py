@@ -108,7 +108,7 @@ def kakao_logout(request):
 
 # 연결 끊기 -> 사용자와 앱의 연결을 해제(카카오 로그인을 통해 서비스에 가입한 사용자가 탈퇴하거나, 카카오 로그인 연동 해제를 요청할 경우)
 def kakao_resign(request):
-    access = "hLdVZLDaF5GkYUBulO5Ntk3DtVddBLAS_hMUQgopyNgAAAF_IFHJfQ"
+    access = ""
     data = requests.post("https://kapi.kakao.com/v1/user/unlink",
                          headers={"Authorization": f"Bearer {access}"},
                          )

@@ -54,7 +54,7 @@ def kakao_login(request):
 # 카카오 회원가입 & 로그인
 def kakao_callback(request):
     app_rest_api_key = env('REST_API_KEY')
-    redirect_uri = "https://www.myplanit.site/login/kakao/callback"
+    redirect_uri = "https://www.myplanit.link/login/kakao/callback"
     client_secret = env('SECRET')
 
     code = request.GET.get('code')

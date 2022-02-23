@@ -53,16 +53,15 @@ def kakao_login(request):
 
 
 # 카카오 회원가입 & 로그인
-def kakao_callback(request):
+def kakao_callback(request, code):
     # app_rest_api_key = env('REST_API_KEY')
     app_rest_api_key = "41a2c19cd51500b22e399c7019defd4c"
     redirect_uri = "https://www.myplanit.link/login/kakao/callback"
     client_secret = env('SECRET')
 
-    code = request.GET.get('code')
-    print(code)
+    get_code = code
     token_req = requests.get(
-        f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={app_rest_api_key}&redirect_uri={redirect_uri}&code={code}"
+        f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={app_rest_api_key}&redirect_uri={redirect_uri}&code={get_code}"
     )
     token_req_json = token_req.json()
     access_token = token_req_json.get("access_token")

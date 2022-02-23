@@ -17,8 +17,8 @@ urlpatterns = [
     path('hello/', views.HelloView.as_view()),
 
     # 카카오 소셜로그인
-    path('login/kakao/', views.kakao_login, name='kakao_login'), # 프론트 부분
-    path('login/kakao/callback/', views.kakao_callback, name='kakao_callback'), # 백엔드 부분
+    # path('login/kakao/', views.kakao_login, name='kakao_login'), # 프론트 부분
+    path('login/kakao/callback/', views.kakaoLoginView.as_view(), name='kakao_callback'), # 백엔드 부분
     path('logout/kakao/', views.kakao_logout, name="kakao_logout"),
     path('resign/kakao/', views.kakao_resign, name="kakao_resign"),
 ]

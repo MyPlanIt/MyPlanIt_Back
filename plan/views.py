@@ -5,15 +5,7 @@ from rest_framework.views import APIView
 from .models import Plan, User_Plan, Plan_todo, User_plan_todo
 from .serializers import PlanSerializer, PlanDetailSerializer, UserPlanSerializer, OwnPlanSerializer
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from rest_framework_jwt.settings import api_settings
 import datetime
-
-JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
-JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
-
-JWT_DECODE_HANDLER = api_settings.JWT_DECODE_HANDLER
-JWT_PAYLOAD_GET_USER_ID_HANDLER = api_settings.JWT_PAYLOAD_GET_USER_ID_HANDLER
 
 
 # 전체 플랜 조회
@@ -45,7 +37,6 @@ class PlanDetailView(APIView):
 # 특정 플랜 구매
 class BuyPlanView(APIView):
     permission_classes = (IsAuthenticated, )
-    authentication_classes = (JSONWebTokenAuthentication, )
 
     def post(self, request, pk):
         try:
@@ -72,7 +63,6 @@ class BuyPlanView(APIView):
 # 특정 플랜 찜하기
 class WishPlanView(APIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
 
     def post(self, request, pk):
         try:
@@ -101,7 +91,6 @@ class WishPlanView(APIView):
 # 찜한 플랜 조회
 class WishPlansView(APIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
 
     def get(self, request):
         try:
@@ -120,7 +109,6 @@ class WishPlansView(APIView):
 # 구매한 플랜 조회
 class BuyPlansView(APIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
 
     def get(self, request):
         try:
@@ -139,7 +127,6 @@ class BuyPlansView(APIView):
 # 이용 중 플랜 조회
 class RegisteredPlanView(APIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
 
     def get(self, request):
         try:
@@ -158,7 +145,6 @@ class RegisteredPlanView(APIView):
 # 플랜 구매 -> 등록하기 (플랜에 해당하는 투두들 user_plan_todo db에 넣기)
 class RegisterPlanView(APIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
 
     def post(self, request, pk):  # pk : plan의 id값
         try:
@@ -185,7 +171,6 @@ class RegisterPlanView(APIView):
 # 등록한 플랜 투두에서 제거하기 (User_Plan과 User_Plan_Todo에서 제거하기)
 class DeletePlanView(APIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JSONWebTokenAuthentication,)
 
     def post(self, request, pk):  # pk : plan의 id값
         try:

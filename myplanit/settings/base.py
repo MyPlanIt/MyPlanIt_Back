@@ -34,7 +34,6 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,17 +43,35 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework.authtoken',
+
+    # django-allauth 관련
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    # django-rest-auth 관련
+    'rest_auth',
+    'rest_auth.registration',
+
+    # kakaoAPI
+    'allauth.socialaccount.providers.kakao',
+
     'corsheaders',
     'multiselectfield',
     'taggit',
     'django_filters',
+
     'accounts',
     'plan',
     'todo',
 ]
 
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -68,7 +85,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'myplanit.urls'
-
 
 TEMPLATES = [
     {
@@ -88,11 +104,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'myplanit.wsgi.application'
 
-
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -112,7 +126,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -125,7 +138,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
@@ -142,7 +154,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ORIGIN_WHITELIST = (
-   'https://myplanit.link',
+    'https://myplanit.link',
 )
 
 CORS_ORIGIN_REGEX_WHITELIST = (
@@ -160,26 +172,22 @@ CORS_ALLOWED_ORIGINS = (
     "https://my-plan-it-front.vercel.app"
 )
 
-
-# JWT permission, authentication 세팅
+# simplejwt permission, authentication 세팅
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
 
+# simplejwt 세팅
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(minutes=10),
 
-# JWT 세팅
-JWT_AUTH = {
-    'JWT_SECRET_KEY': SECRET_KEY,
-    'JWT_ALGORITHM': 'HS256',  # 암호화 알고리즘
-    'JWT_ALLOW_REFRESH': True,  # jwt 갱신 여부
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=15),  # jwt 토큰 유효기간
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=30),  # jwt 토큰 갱신 유효기간
-    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': env('DJANGO_SECRET_KEY'),
+
 }

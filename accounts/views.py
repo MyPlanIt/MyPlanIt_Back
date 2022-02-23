@@ -52,7 +52,7 @@ class HelloView(APIView):
 
 
 class kakaoLoginView(APIView):
-    def kakao_callback(self, request):
+    def get(self, request):
         app_rest_api_key = env('REST_API_KEY')
         redirect_uri = "https://www.myplanit.site/login/kakao/callback"
         client_secret = env('SECRET')

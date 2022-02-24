@@ -94,7 +94,7 @@ def kakao_callback(request):
         user = User.objects.get(username=username)
         print("새로운 유저")
 
-    data = {'username': username, 'token': get_tokens_for_user(user), 'kakao_accessToken': access_token}
+    data = {'username': username, 'django_token': get_tokens_for_user(user), 'kakao_accessToken': access_token}
     print(data)
     return Response(data, status=200)
 

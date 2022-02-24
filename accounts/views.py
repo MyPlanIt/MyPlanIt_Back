@@ -53,7 +53,7 @@ def kakao_login(request):
 
 
 # 카카오 회원가입 & 로그인
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([AllowAny])
 def kakao_callback(request):
     app_rest_api_key = "41a2c19cd51500b22e399c7019defd4c"
@@ -62,7 +62,7 @@ def kakao_callback(request):
     # client_secret = env('SECRET')
     code = request.GET.get('code')
 
-    token_req = requests.get(
+    token_req = requests.post(
         f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={app_rest_api_key}&redirect_uri={redirect_uri}&code={code}"
     )
     token_req_json = token_req.json()
@@ -111,7 +111,7 @@ def kakao_logout(request):
 
 # 연결 끊기 -> 사용자와 앱의 연결을 해제(카카오 로그인을 통해 서비스에 가입한 사용자가 탈퇴하거나, 카카오 로그인 연동 해제를 요청할 경우)
 def kakao_resign(request):
-    access = "alOJ-Iw3L4fteZSFAuVyeXsYl4ImFORzGERplQo9dGgAAAF_LKAVHA"
+    access = "eGF4UFcPyV47RB1LNwEHU8vI5Z2EdYHbk1-p1AopcFEAAAF_LNv1Ag"
     data = requests.post("https://kapi.kakao.com/v1/user/unlink",
                          headers={"Authorization": f"Bearer {access}"},
                          )

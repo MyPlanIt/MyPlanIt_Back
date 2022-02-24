@@ -53,7 +53,7 @@ def kakao_login(request):
 
 
 # 카카오 회원가입 & 로그인
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes([AllowAny])
 def kakao_callback(request):
     app_rest_api_key = "41a2c19cd51500b22e399c7019defd4c"
@@ -62,7 +62,7 @@ def kakao_callback(request):
     # client_secret = env('SECRET')
     code = request.GET.get('code')
 
-    token_req = requests.post(
+    token_req = requests.get(
         f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={app_rest_api_key}&redirect_uri={redirect_uri}&code={code}"
     )
     token_req_json = token_req.json()

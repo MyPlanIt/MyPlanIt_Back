@@ -186,7 +186,7 @@ REST_FRAMEWORK = {
 # simplejwt 세팅
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(minutes=10),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=30),
 
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': env('DJANGO_SECRET_KEY'),

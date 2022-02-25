@@ -57,12 +57,14 @@ def kakao_login(request):
 @permission_classes([AllowAny])
 def kakao_callback(request, format=None):
     app_rest_api_key = "41a2c19cd51500b22e399c7019defd4c"
-    redirect_uri = "http://127.0.0.1:8000/login/kakao/callback"
+    # redirect_uri = "http://127.0.0.1:8000/login/kakao/callback"
+    redirect_uri = "https://myplanit.link/login/kakao/callback"
     # client_secret = env('SECRET')
-    code = request.GET.get('code')
     # request_body = json.loads(request.body)
     # code = request_body.get('code', None)
-    code = request.data["code"]
+    # code = request.data["code"]
+
+    code = request.GET.get('code', None)
     headers = {
         'Access-Control-Allow-Origin': 'https://www.myplanit.site',
         'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',

@@ -61,9 +61,9 @@ def kakao_callback(self, request):
     redirect_uri = "https://myplanit.link/login/kakao/callback"
     # client_secret = env('SECRET')
     # code = request.GET.get('code')
-    # request_body = json.loads(request.body)
-    # code = request_body.get('code', None)
-    code = request.data["code"]
+    request_body = json.loads(request.body)
+    code = request_body.get('code', None)
+    # code = request.data["code"]
     headers = {
         'Access-Control-Allow-Origin': 'https://www.myplanit.site',
         'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',

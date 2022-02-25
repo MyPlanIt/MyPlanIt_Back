@@ -61,10 +61,20 @@ def kakao_callback(request):
     redirect_uri = "https://myplanit.link/login/kakao/callback"
     # client_secret = env('SECRET')
     code = request.GET.get('code')
+    headers = {
+        'Access-Control-Allow-Origin': 'https://www.myplanit.site',
+        'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+    }
+    data = {
+        'grant_type': 'authorization_code',
+        'client_id': app_rest_api_key,
+        'redirect_uri': redirect_uri,
+        'code': code
+    }
 
-    token_req = requests.get(
-        f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={app_rest_api_key}&redirect_uri={redirect_uri}&code={code}"
-    )
+    url = 'https://kauth.kakao.com/oauth/token'
+
+    token_req = requests.post(url, headers=headers, data=data)
     token_req_json = token_req.json()
     access_token = token_req_json.get("access_token")
     refresh_token = token_req_json.get("refresh_token")
@@ -73,7 +83,11 @@ def kakao_callback(request):
 
     kakao_api_response = requests.post(
         "https://kapi.kakao.com/v2/user/me",
-        headers={"Authorization": f"Bearer {access_token}"},
+        headers={
+            "Authorization": f"Bearer {access_token}",
+            "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+            "Access-Control-Allow-Origin": "https://www.myplanit.site",
+        },
     )
     kakao_api_response = kakao_api_response.json()
     user_id = kakao_api_response.get('id')

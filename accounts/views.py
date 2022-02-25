@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, HttpResponse, render
 from django.http import JsonResponse
-import requests
+import requests, json
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -60,8 +60,10 @@ def kakao_callback(self, request):
     # redirect_uri = "http://127.0.0.1:8000/login/kakao/callback"
     redirect_uri = "https://myplanit.link/login/kakao/callback"
     # client_secret = env('SECRET')
-    code = request.GET.get('code')
-    # code = request.data["code"]
+    # code = request.GET.get('code')
+    # request_body = json.loads(request.body)
+    # code = request_body.get('code', None)
+    code = request.data["code"]
     headers = {
         'Access-Control-Allow-Origin': 'https://www.myplanit.site',
         'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',

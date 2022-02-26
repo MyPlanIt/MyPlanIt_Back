@@ -185,7 +185,7 @@ REST_FRAMEWORK = {
 
 # simplejwt 세팅
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=2),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=30),
 
     'ALGORITHM': 'HS256',

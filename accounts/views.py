@@ -102,6 +102,13 @@ def kakao_callback(request, format=None):
     realname = kakao_api_response.get('properties').get('nickname')
     print(username, realname)
 
+    ## 추가
+    requests.post(
+        "https://kapi.kakao.com/v1/user/logout",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    ##
+
     try:
         user = User.objects.get(username=username)
         print("기존 유저")
@@ -120,9 +127,10 @@ def kakao_callback(request, format=None):
 # 로그아웃 -> 사용자의 access_token, refresh_token 모두 만료시킴
 def kakao_logout(request):
     access = "2zqeoqTJQ-u-a1SiB1ga2SnPv2LIX8OiSQ5oego9cxgAAAF_LK3m6g"
-    data = requests.post("https://kapi.kakao.com/v1/user/logout",
-                  headers={"Authorization": f"Bearer {access}"},
-                  )
+    data = requests.post(
+        "https://kapi.kakao.com/v1/user/logout",
+        headers={"Authorization": f"Bearer {access}"},
+        )
     print(data.json())
     return HttpResponse("로그아웃")
 

@@ -6,7 +6,7 @@ from . import views
 urlpatterns = [
     ## 기존
     #path('signup', views.SignupView.as_view()),  # 회원 가입
-    #path('login', views.LoginView.as_view()),  # 로그인
+    # path('login', views.LoginView.as_view()),  # 로그인
     #path('signup/onboarding', views.OnboardingView.as_view()),  # 온보딩
 
 
@@ -21,4 +21,7 @@ urlpatterns = [
      path('auth/kakao/', views.kakao_callback, name='kakao_callback'), # 백엔드 부분
      path('logout/kakao/', views.kakao_logout, name="kakao_logout"),
      path('resign/kakao/', views.kakao_resign, name="kakao_resign"),
+
+    # 관리자 인증
+    path('manager', views.login, name='login'),
 ]

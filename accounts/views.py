@@ -56,8 +56,8 @@ def kakao_login(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def kakao_callback(request, format=None):
-    app_rest_api_key = "41a2c19cd51500b22e399c7019defd4c"
-    redirect_uri = "https://www.myplanit.site/login/kakao/callback"
+    kakao_rest_api_key = env('kakao_rest_api_key')
+    kakao_redirect_uri = env('kakao_redirect_uri')
 
     code = request.GET.get('code', None)
     headers = {
@@ -66,8 +66,8 @@ def kakao_callback(request, format=None):
     }
     data = {
         'grant_type': 'authorization_code',
-        'client_id': app_rest_api_key,
-        'redirect_uri': redirect_uri,
+        'client_id': kakao_rest_api_key,
+        'redirect_uri': kakao_redirect_uri,
         'code': code
     }
 

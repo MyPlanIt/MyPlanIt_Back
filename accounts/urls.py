@@ -11,16 +11,16 @@ urlpatterns = [
 
 
     ## 새로 도입
-    path('api/token/', jwt_views.TokenObtainPairView.as_view()),
-    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view()), # access-token refresh
-    path('hello/', views.HelloView.as_view()),
+    path('api/token', jwt_views.TokenObtainPairView.as_view()),
+    path('api/token/verify', TokenVerifyView.as_view(), name='token_verify'),
+    path('api/token/refresh', jwt_views.TokenRefreshView.as_view()), # access-token refresh
+    path('hello', views.HelloView.as_view()),
 
     # 카카오 소셜로그인
-     # path('auth/kakao/', views.kakao_login, name='kakao_login'), # 프론트 부분
-     path('auth/kakao/', views.kakao_callback, name='kakao_callback'), # 백엔드 부분
-     path('logout/kakao/', views.kakao_logout, name="kakao_logout"),
-     path('resign/kakao/', views.kakao_resign, name="kakao_resign"),
+     # path('auth/kakao', views.kakao_login, name='kakao_login'), # 프론트 부분
+     path('auth/kakao', views.kakao_callback, name='kakao_callback'), # 백엔드 부분
+     path('logout/kakao', views.kakao_logout, name="kakao_logout"),
+     path('resign/kakao', views.kakao_resign, name="kakao_resign"),
 
     # 관리자 인증
     path('manager', views.login, name='login'),

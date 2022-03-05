@@ -45,7 +45,6 @@ class HelloView(APIView):
 @permission_classes([AllowAny])
 def kakao_login(request):
     app_rest_api_key = "41a2c19cd51500b22e399c7019defd4c"
-    # redirect_uri = "http://127.0.0.1:8000/login/kakao/callback"
     redirect_uri = "https://myplanit.link/login/kakao/callback"
     return redirect(
         f"https://kauth.kakao.com/oauth/authorize?client_id={app_rest_api_key}&redirect_uri={redirect_uri}&response_type=code"

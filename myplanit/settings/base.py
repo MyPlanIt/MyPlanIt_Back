@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'accounts',
     'plan',
     'todo',
+    'landingpage',
 ]
 
 SITE_ID = 1

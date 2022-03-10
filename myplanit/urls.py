@@ -6,4 +6,5 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('', include('plan.urls')),
     path('', include('todo.urls')),
+    path('', include('landingpage.urls')),
 ]

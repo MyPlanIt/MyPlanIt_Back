@@ -58,9 +58,9 @@ INSTALLED_APPS = [
     'rest_auth',
     'rest_auth.registration',
 
-    # kakaoAPI
+    # provider
     'allauth.socialaccount.providers.kakao',
-
+    'allauth.socialaccount.providers.google',
     'corsheaders',
     'multiselectfield',
     'taggit',

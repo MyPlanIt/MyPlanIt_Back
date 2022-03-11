@@ -171,7 +171,8 @@ CORS_ALLOWED_ORIGINS = (
     "https://0.0.0.0:3000",
     "http://my-plan-it-front.vercel.app",
     "https://my-plan-it-front.vercel.app",
-    "https://www.myplanit.site"
+    "https://www.myplanit.site",
+    "https://myplanit-landing.netlify.app",
 )
 
 # simplejwt permission, authentication 세팅

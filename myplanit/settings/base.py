@@ -12,6 +12,8 @@ import environ
 import pymysql
 import datetime
 
+AUTH_USER_MODEL = 'accounts.User'
+
 pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -32,7 +34,6 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,17 +43,37 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
     'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework.authtoken',
+
+    # django-allauth 관련
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    # django-rest-auth 관련
+    'rest_auth',
+    'rest_auth.registration',
+
+    # provider (kakao, google)
+    'allauth.socialaccount.providers.kakao',
+    'allauth.socialaccount.providers.google',
+
     'corsheaders',
     'multiselectfield',
-    'rest_framework_simplejwt',
     'taggit',
     'django_filters',
+
     'accounts',
     'plan',
     'todo',
+    'landingpage',
 ]
 
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -85,6 +106,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'myplanit.wsgi.application'
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -104,7 +129,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -117,7 +141,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
@@ -133,7 +156,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = [
+CORS_ORIGIN_WHITELIST = (
+    'https://myplanit.link',
+)
+
+CORS_ORIGIN_REGEX_WHITELIST = (
+    'https://myplanit.link',
+)
+
+CORS_ALLOWED_ORIGINS = (
     "http://localhost:8080",
     "http://localhost:3000",
     "http://localhost",
@@ -141,40 +172,28 @@ CORS_ALLOWED_ORIGINS = [
     "https://127.0.0.1:3000",
     "https://0.0.0.0:3000",
     "http://my-plan-it-front.vercel.app",
-    "https://my-plan-it-front.vercel.app"
-]
+    "https://my-plan-it-front.vercel.app",
+    "https://www.myplanit.site",
+    "https://myplanit-landing.netlify.app",
+    "https://www.myplanit-home.site",
+)
 
-# simple_JWT 추가
+# simplejwt permission, authentication 세팅
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
 }
 
-# JWT 세팅
+# simplejwt 세팅
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=2),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=30),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': False,
-    'UPDATE_LAST_LOGIN': False,
 
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': env('DJANGO_SECRET_KEY'),
-    'VERIFYING_KEY': None,
-    'AUDIENCE': None,
-    'ISSUER': None,
-    'JWK_URL': None,
-    'LEEWAY': 0,
 
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
-
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_TYPE_CLAIM': 'token_type',
-
-    'JTI_CLAIM': 'jti',
 }

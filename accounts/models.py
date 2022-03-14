@@ -40,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     username = models.CharField(
-        max_length=20,
+        max_length=50,
         unique=True
     )
     realname = models.CharField(

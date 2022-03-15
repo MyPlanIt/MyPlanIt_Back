@@ -43,7 +43,7 @@ def google_callback(request, format=None):
         auth_code = auth_code.replace('%2F', '/')
 
     headers = {
-        'Access-Control-Allow-Origin': 'https://www.myplanit.site',
+        'Access-Control-Allow-Origin': 'http://localhost:3000',
         'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
     }
 
@@ -72,7 +72,7 @@ def google_callback(request, format=None):
         headers={
             "Authorization": f"Bearer {access_token}",
             "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
-            "Access-Control-Allow-Origin": "https://www.myplanit.site"
+            "Access-Control-Allow-Origin": "http://localhost:3000"
         }
     )
 

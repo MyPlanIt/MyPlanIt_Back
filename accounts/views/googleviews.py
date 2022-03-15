@@ -14,7 +14,7 @@ User = get_user_model()
 
 # 전역 변수로 설정
 client_id = env('GOOGLE_CLIENT_ID')
-redirect_uri = "https://www.myplanit.site/login/google/callback"
+redirect_uri = "http://localhost:3000/auth/google/callback"
 scope = "https://www.googleapis.com/auth/userinfo.profile"
 client_secret = env('GOOGLE_CLIENT_SECRET')
 

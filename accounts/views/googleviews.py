@@ -14,7 +14,7 @@ User = get_user_model()
 
 # 전역 변수로 설정
 client_id = env('GOOGLE_CLIENT_ID')
-redirect_uri = "https://myplanit.site/auth/google/callback"
+redirect_uri = "https://www.myplanit.site/auth/google/callback"
 scope = "https://www.googleapis.com/auth/userinfo.profile"
 client_secret = env('GOOGLE_CLIENT_SECRET')
 
@@ -43,7 +43,7 @@ def google_callback(request, format=None):
         auth_code = auth_code.replace('%2F', '/')
 
     headers = {
-        'Access-Control-Allow-Origin': 'https://myplanit.site',
+        'Access-Control-Allow-Origin': 'https://www.myplanit.site',
         'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
     }
 
@@ -72,7 +72,7 @@ def google_callback(request, format=None):
         headers={
             "Authorization": f"Bearer {access_token}",
             "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
-            "Access-Control-Allow-Origin": "https://myplanit.site"
+            "Access-Control-Allow-Origin": "https://www.myplanit.site"
         }
     )
 

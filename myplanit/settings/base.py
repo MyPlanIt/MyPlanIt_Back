@@ -58,9 +58,10 @@ INSTALLED_APPS = [
     'rest_auth',
     'rest_auth.registration',
 
-    # provider
+    # provider (kakao, google)
     'allauth.socialaccount.providers.kakao',
     'allauth.socialaccount.providers.google',
+
     'corsheaders',
     'multiselectfield',
     'taggit',
@@ -107,6 +108,7 @@ WSGI_APPLICATION = 'myplanit.wsgi.application'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 # Password validation

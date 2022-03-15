@@ -36,7 +36,7 @@ def get_code(request):
 def google_callback(request, format=None):
     # 인증 코드로 구글 제공 access token 발급
     google_get_token_endpoint = 'https://oauth2.googleapis.com/token'
-    auth_code = request.GET.get('code')
+    auth_code = request.GET.get('code', None)
 
     # 인증 코드 decode 과정
     if '%' in auth_code:

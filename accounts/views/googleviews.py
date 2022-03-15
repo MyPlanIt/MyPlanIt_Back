@@ -24,7 +24,7 @@ client_secret = env('GOOGLE_CLIENT_SECRET')
 @permission_classes([AllowAny])
 def get_code(request):
     google_login_endpoint = "https://accounts.google.com/o/oauth2/v2/auth"
-    code_redirect_uri = 'https://myplanit.link/login/kakao/callback'
+    code_redirect_uri = 'https://myplanit.link/login/google/callback'
     return redirect(
         f"{google_login_endpoint}?client_id={client_id}&redirect_uri={code_redirect_uri}&response_type=code&scope={scope}"
     )

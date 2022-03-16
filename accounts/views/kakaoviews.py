@@ -80,9 +80,9 @@ def kakao_callback(request, format=None):
     print(username, realname)
 
     # 추가
-    requests.post("https://kapi.kakao.com/v1/user/unlink",
-                  headers={"Authorization": f"Bearer {access_token}"},
-                  )
+    # requests.post("https://kapi.kakao.com/v1/user/unlink",
+    #               headers={"Authorization": f"Bearer {access_token}"},
+    #               )
 
     try:
         user = User.objects.get(username=username)

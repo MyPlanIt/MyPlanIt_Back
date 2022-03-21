@@ -6,7 +6,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.prod
-    command: gunicorn myplanit.wsgi:application --bind 0.0.0.0:8000 --timeout=60
+    command: gunicorn myplanit.wsgi:application --bind 0.0.0.0:8000 --timeout=120
     environment:
       DJANGO_SETTINGS_MODULE: myplanit.settings.prod
     env_file:

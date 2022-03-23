@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from taggit.serializers import TagListSerializerField, TaggitSerializer
-from .models import Plan, User_Plan
+from .models import Plan, User_Plan, Proposal
+from accounts.serializers import UserProposalSerializer
 
 
 class PlanSerializer(TaggitSerializer, serializers.ModelSerializer):
@@ -31,3 +32,11 @@ class UserPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_Plan
         fields = ['plan']
+
+
+class ProposalSerializer(serializers.ModelSerializer):
+    user = UserProposalSerializer()
+
+    class Meta:
+        model = Proposal
+        fields = ['id', 'user', 'proposal']

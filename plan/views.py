@@ -2,8 +2,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from .models import Plan, User_Plan, Plan_todo, User_plan_todo
-from .serializers import PlanSerializer, PlanDetailSerializer, UserPlanSerializer, OwnPlanSerializer
+from .models import Plan, User_Plan, Plan_todo, User_plan_todo, Proposal
+from .serializers import PlanSerializer, PlanDetailSerializer, UserPlanSerializer, OwnPlanSerializer, ProposalSerializer
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 import datetime
 
@@ -188,3 +188,11 @@ class DeletePlanView(APIView):
             return Response({"message": "삭제완료"}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "error"}, status=status.HTTP_202_ACCEPTED)
+
+
+class ProposalView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def get(self, request):
+        proposal = Proposal.objects.all().order_by('-id')
+        return Response(ProposalSerializer(proposal, many=True).data, status=status.HTTP_200_OK)

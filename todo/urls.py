@@ -8,6 +8,10 @@ urlpatterns = [
     path('todos/plan/<int:plan_id>/todos', views.PlanTodosView.as_view()),  # 플랜 클릭 시 전체 투두 조회 기능
     path('todos/plan/<int:todo_id>/detail', views.DetailTodoView.as_view()),  # 투두 세부 정보 조회 기능
 
+    path('todos/plan/detail/all/<int:plan_id>', views.PlanDetailAllView.as_view()), # 플랜 상세페에지 중 All 조회 기능
+    path('todos/plan/detail/progress/<int:plan_id>', views.PlanDetailProgressView.as_view()), # 플랜 상세피이지 중 Progress 기능
+    path('todos/plan/detail/done/<int:plan_id>', views.PlanDetailDoneView.as_view()), # 플랜 상세피이지 중 Done 기능
+
     path('todos/my/<str:date>', views.MyTodoVIew.as_view()),  # 개인 투두 조회, 추가
     path('todos/my/<int:id>/check', views.EditMyTodoView.as_view()),  # 개인 투두 완료 기능
     path('todos/my/<int:id>/delete', views.EditMyTodoView.as_view()),  # 개인 투두 삭제 기능

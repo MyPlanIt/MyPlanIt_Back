@@ -63,3 +63,21 @@ class UserPersonalTodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_personal_todo
         fields = ['id', 'todo_name', 'date', 'finish_flag']
+
+
+## 상세페이지 세부
+
+
+class PlanDetailSerializer(serializers.ModelSerializer):
+    date = serializers.SerializerMethodField()
+    plan_todo = serializers.SerializerMethodField()
+
+    def get_plan_todo(self, obj):
+        return obj.plan_todo.name
+
+    def get_date(self, obj):
+        return obj.plan_todo.date
+
+    class Meta:
+        model = User_plan_todo
+        fields = ['date', 'id', 'plan_todo', 'finish_flag']

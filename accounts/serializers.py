@@ -68,3 +68,9 @@ class OnbordingSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['jobs']
+
+
+class UserProposalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'realname']

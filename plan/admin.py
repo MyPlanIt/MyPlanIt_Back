@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Plan, Plan_todo, Plan_todo_video, User_Plan, User_plan_todo
+from .models import Plan, Plan_todo, Plan_todo_video, User_Plan, User_plan_todo, Proposal
 
 
 class Plan_todo_videoInline(admin.TabularInline):
@@ -37,3 +37,8 @@ class User_PlanAdmin(admin.ModelAdmin):
 @admin.register(User_plan_todo)
 class User_plan_todoAdmin(admin.ModelAdmin):
     list_display = ['user', 'plan', 'plan_todo', 'finish_flag', 'date']
+
+
+@admin.register(Proposal)
+class User_ProposalAdmin(admin.ModelAdmin):
+    list_display = ['user', 'proposal']

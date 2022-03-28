@@ -2,9 +2,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from .models import Plan, User_Plan, Plan_todo, User_plan_todo
-from .serializers import PlanSerializer, PlanDetailSerializer, UserPlanSerializer, OwnPlanSerializer
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from .models import Plan, User_Plan, Plan_todo, User_plan_todo, Proposal
+from .serializers import PlanSerializer, PlanDetailSerializer, UserPlanSerializer, ProposalSerializer
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 import datetime
 
 
@@ -188,3 +188,26 @@ class DeletePlanView(APIView):
             return Response({"message": "삭제완료"}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "error"}, status=status.HTTP_202_ACCEPTED)
+
+
+class ProposalView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        try:
+            proposal = Proposal.objects.all().order_by('-id')
+            return Response(ProposalSerializer(proposal, many=True).data, status=status.HTTP_200_OK)
+
+        except:
+            return Response({"message": "아직 요청사항이 없습니다."}, status=status.HTTP_202_ACCEPTED)
+
+    def post(self, request):
+        try:
+            print(request.user)
+            proposal = Proposal.objects.create(user=request.user, proposal=request.proposal)
+            proposal.save()
+
+            return Response({"message": "요청이 전달되었습니다."}, status=status.HTTP_200_OK)
+
+        except:
+            return Response({"message": "오류가 발생했습니다."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)

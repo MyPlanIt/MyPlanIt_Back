@@ -203,7 +203,7 @@ class ProposalView(APIView):
 
     def post(self, request):
         try:
-            proposal = Proposal(user=request.user, proposal=request.data['proposal'])
+            proposal = Proposal.objects.create(user=request.user, proposal=request.data['proposal'])
             proposal.save()
 
             return Response({"message": "요청이 전달되었습니다."}, status=status.HTTP_200_OK)

@@ -23,6 +23,11 @@ class Plan(models.Model):
         return self.name
 
 
+class Proposal(models.Model):
+    proposal = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
 class Plan_todo(models.Model):
     name = models.CharField(max_length=30)
     img_url = models.URLField(blank=True, null=True)

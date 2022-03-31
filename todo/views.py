@@ -74,6 +74,7 @@ class DelayPlanTodoView(APIView):
         try:
             user_plan_todo = get_object_or_404(User_plan_todo, id=id)
             user_plan_todo.date += datetime.timedelta(days=1)  # 플랜 투두 날짜 + 1
+            user_plan_todo.day += 1 # 플랜 투두 일차 + 1
             user_plan_todo.save()
             return Response({"message": "success"}, status=status.HTTP_200_OK)
         except:

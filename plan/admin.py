@@ -36,4 +36,4 @@ class User_PlanAdmin(admin.ModelAdmin):
 
 @admin.register(User_plan_todo)
 class User_plan_todoAdmin(admin.ModelAdmin):
-    list_display = ['user', 'plan', 'plan_todo', 'finish_flag', 'date']
+    list_display = ['user', 'plan', 'plan_todo', 'finish_flag', 'date', 'day']

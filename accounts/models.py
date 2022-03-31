@@ -1,6 +1,4 @@
-from multiselectfield import MultiSelectField
 from django.db import models
-from accounts.util import choices
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin
 )

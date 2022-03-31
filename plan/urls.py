@@ -12,4 +12,6 @@ urlpatterns = [
     path('myplans/registered', views.RegisteredPlanView.as_view()),  # 유저가 등록한 플랜 조회
     path('myplans/<int:pk>/register', views.RegisterPlanView.as_view()),  # 구매한 플랜 등록
     path('myplans/<int:pk>/delete', views.DeletePlanView.as_view()),  # 등록한 플랜 삭제
+
+    path('proposal', views.ProposalView.as_view()),  # 제안 폼
 ]

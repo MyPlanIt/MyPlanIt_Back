@@ -13,7 +13,7 @@ class UserPlanTodoSerializer(serializers.ModelSerializer):
     # plan = serializers.SerializerMethodField() # serializer method field 이용
     plan_todo = serializers.SerializerMethodField()  # serializer method field 이용
     plan_id = serializers.SerializerMethodField()
-    todo_id = serializers.SerializerMethodField()
+    plan_todo_id = serializers.SerializerMethodField()
 
     # def get_plan(self, obj):
     #    return obj.plan.name
@@ -24,12 +24,13 @@ class UserPlanTodoSerializer(serializers.ModelSerializer):
     def get_plan_id(self, obj):
         return obj.plan.id
 
-    def get_todo_id(self, obj):
+    def get_plan_todo_id(self, obj):
         return obj.plan_todo.id
+
 
     class Meta:
         model = User_plan_todo
-        fields = ['id', 'plan_id', 'todo_id', 'plan_todo', 'finish_flag', 'date']
+        fields = ['id', 'plan_id', 'plan_todo_id', 'plan_todo', 'finish_flag', 'date']
 
 
 # class PlanTodoSerializer(serializers.ModelSerializer):
@@ -63,3 +64,22 @@ class UserPersonalTodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_personal_todo
         fields = ['id', 'todo_name', 'date', 'finish_flag']
+
+
+## 상세페이지 세부
+
+
+class PlanDetailSerializer(serializers.ModelSerializer):
+    plan_todo = serializers.SerializerMethodField()
+    plan_todo_id = serializers.SerializerMethodField()
+
+    def get_plan_todo_id(self, obj):
+        return obj.plan_todo.id
+
+    def get_plan_todo(self, obj):
+        return obj.plan_todo.name
+
+
+    class Meta:
+        model = User_plan_todo
+        fields = ['day', 'id', 'plan_todo_id', 'plan_todo', 'finish_flag']

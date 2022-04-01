@@ -159,7 +159,7 @@ class RegisterPlanView(APIView):
             for plan_todo in plan_todos:
                 date = datetime.date.today() # 오늘 날짜 가져오기
                 date += datetime.timedelta(days=plan_todo.date)  # 날짜 + 걸리는 일수에 맞게 db에 넣어주기
-                user_plan_todo = User_plan_todo(user=request.user, plan=plan, plan_todo=plan_todo, date=date)
+                user_plan_todo = User_plan_todo(user=request.user, plan=plan, plan_todo=plan_todo, date=date, day=plan_todo.date) # day field 추가
                 user_plan_todo.save()
             user_plan.register_flag = True  # 등록 flag = True 로 변경
             user_plan.save()

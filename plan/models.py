@@ -69,3 +69,4 @@ class User_plan_todo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
     plan_todo = models.ForeignKey(Plan_todo, on_delete=models.CASCADE)
+    day = models.PositiveIntegerField(default=0) # 일차

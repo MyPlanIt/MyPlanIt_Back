@@ -76,6 +76,15 @@ class DelayPlanTodoView(APIView):
             user_plan_todo.date += datetime.timedelta(days=1)  # 플랜 투두 날짜 + 1
             user_plan_todo.day += 1 # 플랜 투두 일차 + 1
             user_plan_todo.save()
+
+            # User_Plan 모델에 start_date, finish_date 업데이트
+            plan = user_plan_todo.plan
+            user_plan = User_Plan.objects.get(user=request.user, plan=plan)
+
+            user_plan.start_date = User_plan_todo.objects.filter(user=request.user, plan=plan).order_by('date').first().date
+            user_plan.finish_date = User_plan_todo.objects.filter(user=request.user, plan=plan).order_by('date').last().date
+            user_plan.save()
+
             return Response({"message": "success"}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "error"}, status=status.HTTP_400_BAD_REQUEST)
@@ -254,8 +263,18 @@ class PlanTodoDelayView(APIView):
         try:
             user_plan_todo = User_plan_todo.objects.get(id=id) # 해당 유저-플랜-투두
             user_plan_todo.day += 1
+            print(user_plan_todo.day)
             user_plan_todo.date += datetime.timedelta(days=1)
             user_plan_todo.save()
+
+            # User_Plan 모델에 start_date, finish_date 업데이트
+            plan = user_plan_todo.plan
+            user_plan = User_Plan.objects.get(user=request.user, plan=plan)
+
+            user_plan.start_date = User_plan_todo.objects.filter(user=request.user, plan=plan).order_by('date').first().date
+            user_plan.finish_date = User_plan_todo.objects.filter(user=request.user, plan=plan).order_by('date').last().date
+            user_plan.save()
+
             return Response({"message": "success"}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
@@ -271,6 +290,15 @@ class PlanTodoAdvanceView(APIView):
             user_plan_todo.day -= 1
             user_plan_todo.date -= datetime.timedelta(days=1)
             user_plan_todo.save()
+
+            # User_Plan 모델에 start_date, finish_date 업데이트
+            plan = user_plan_todo.plan
+            user_plan = User_Plan.objects.get(user=request.user, plan=plan)
+
+            user_plan.start_date = User_plan_todo.objects.filter(user=request.user, plan=plan).order_by('date').first().date
+            user_plan.finish_date = User_plan_todo.objects.filter(user=request.user, plan=plan).order_by('date').last().date
+            user_plan.save()
+
             return Response({"message": "success"}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)

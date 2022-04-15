@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .models import Plan, User_Plan, Plan_todo, User_plan_todo, Proposal
-from .serializers import PlanSerializer, PlanDetailSerializer, UserPlanSerializer, ProposalSerializer
+from .serializers import PlanSerializer, PlanDetailSerializer, UserPlanSerializer, RegisteredPlanSerializer, ProposalSerializer
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 import datetime
 
@@ -133,7 +133,7 @@ class RegisteredPlanView(APIView):
             user_plan = User_Plan.objects.filter(user=request.user).filter(register_flag=True).order_by('-updated_at')
 
             if user_plan.exists():
-                return Response({"register_plans": UserPlanSerializer(user_plan, many=True).data}, status=status.HTTP_200_OK)
+                return Response({"register_plans": RegisteredPlanSerializer(user_plan, many=True).data}, status=status.HTTP_200_OK)
 
             else:
                 return Response({"message": "이용 중인 플랜이 없습니다."}, status=status.HTTP_200_OK)
@@ -163,6 +163,14 @@ class RegisterPlanView(APIView):
                 user_plan_todo.save()
             user_plan.register_flag = True  # 등록 flag = True 로 변경
             user_plan.save()
+
+            # User_Plan 모델에 start_date, finish_date 추가
+            user_plan = User_Plan.objects.get(user=request.user, plan=plan)
+
+            user_plan.start_date = User_plan_todo.objects.filter(user=request.user, plan=plan).first().date
+            user_plan.finish_date = User_plan_todo.objects.filter(user=request.user, plan=plan).last().date
+            user_plan.save()
+
             return Response({"message": "등록완료"}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "error"}, status=status.HTTP_202_ACCEPTED)

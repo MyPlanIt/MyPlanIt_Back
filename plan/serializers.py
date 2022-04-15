@@ -31,7 +31,15 @@ class UserPlanSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User_Plan
-        fields = ['plan']
+        fields = ['plan', 'register_flag']
+
+
+class RegisteredPlanSerializer(serializers.ModelSerializer):
+    plan = OwnPlanSerializer()
+
+    class Meta:
+        model = User_Plan
+        fields = ['plan', 'register_flag', 'start_date', 'finish_date']
 
 
 class ProposalSerializer(serializers.ModelSerializer):

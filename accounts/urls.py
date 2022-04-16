@@ -24,6 +24,7 @@ urlpatterns = [
 
     # 구글 소셜로그인
     path('auth/google', googleviews.google_callback, name='google_login_callback'),
+    path('logout/google', googleviews.google_logout, name='google_logout'),
 
     # 관리자 인증
     path('manager', kakaoviews.login, name='login'),

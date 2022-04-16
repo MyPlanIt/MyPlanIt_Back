@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 import requests
 
@@ -61,6 +61,7 @@ def google_callback(request, format=None):
 
     token_req_json = token_req.json()
 
+    global access_token
     access_token = token_req_json.get("access_token")
     print("access_token: ", access_token)
 
@@ -104,3 +105,25 @@ def google_callback(request, format=None):
 
     print(data)
     return Response(data, status=status.HTTP_200_OK)
+
+
+def google_logout(request, format=None):
+    revoke_token = requests.post(
+        "https://oauth2.googleapis.com/revoke",
+        headers={
+            "Authorization": f"Bearer {access_token}",
+            'Access-Control-Allow-Origin': 'https://www.myplanit.site',
+            'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        },
+        params={
+            'token': access_token
+        }
+    )
+
+    if revoke_token.ok:
+        user = request.user
+        user.update(is_active=False)
+        return Response({"message": "로그아웃 완료"}, status=status.HTTP_200_OK)
+
+    else:
+        return Response({"message": "로그아웃 실패"}, status=status.HTTP_400_BAD_REQUEST)

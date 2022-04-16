@@ -83,3 +83,10 @@ class PlanDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_plan_todo
         fields = ['day', 'id', 'plan_todo_id', 'plan_todo', 'finish_flag']
+
+
+class PlanDetailSerializer2(serializers.ModelSerializer):
+
+    class Meta:
+        model = Plan_todo
+        fields = ['id', 'date', 'name']

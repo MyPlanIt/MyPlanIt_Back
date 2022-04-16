@@ -4,7 +4,7 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from plan.models import Plan, User_Plan, Plan_todo, User_plan_todo, Plan_todo_video
 from .models import User_personal_todo
-from .serializers import UserPlanTodoSerializer, PlanTodoSerializer, TodoMediaSerializer, UserPersonalTodoSerializer, PlanDetailSerializer
+from .serializers import UserPlanTodoSerializer, PlanTodoSerializer, TodoMediaSerializer, UserPersonalTodoSerializer, PlanDetailSerializer, PlanDetailSerializer2
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 import datetime
 
@@ -217,10 +217,15 @@ class PlanDetailAllView(APIView):
 
     def get(self, request, plan_id):
         try:
-            user_plan_todos = User_plan_todo.objects.filter(user=request.user, plan_id=plan_id).order_by('day')  # 해당 플랜의 투두들
-            user_plan_todos.order_by('plan_todo__date') # 날짜순 정렬
-            data = PlanDetailSerializer(user_plan_todos, many=True).data
-            return Response({"data": data}, status=status.HTTP_200_OK)
+            if User_Plan.objects.get(user=request.user, plan_id=plan_id).register_flag == True:
+                user_plan_todos = User_plan_todo.objects.filter(user=request.user, plan_id=plan_id).order_by('day')  # 해당 플랜의 투두들
+                user_plan_todos.order_by('plan_todo__date')  # 날짜순 정렬
+                data = PlanDetailSerializer(user_plan_todos, many=True).data
+                return Response({"data": data}, status=status.HTTP_200_OK)
+            else:
+                plan_todos = Plan_todo.objects.filter(plan_id=plan_id)
+                data = PlanDetailSerializer2(plan_todos, many=True).data
+                return Response({"data": data}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
 

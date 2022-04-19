@@ -31,7 +31,15 @@ class PlanDetailView(APIView):
     def get(self, request, pk):
         plan = get_object_or_404(Plan, id=pk)
         serializer = PlanDetailSerializer(plan)
-        return Response(serializer.data)
+
+        if User_Plan.objects.filter(user=request.user, plan_id=pk).exists():
+            return Response({"Plan": serializer.data,
+                             "own_flag": User_Plan.objects.get(user=request.user, plan_id=pk).own_flag}
+                            , status=status.HTTP_200_OK)
+
+        else:
+            return Response({"Plan": serializer.data,
+                             "own_flag": "false"}, status=status.HTTP_200_OK)
 
 
 # 특정 플랜 구매

@@ -245,7 +245,7 @@ class PlanTodoUncheckView(APIView):
 
 
 # 플랜 상세 페이지 중 Done 부분 -> Check로 바뀜
-class PlanDetailCheckView(APIView):
+class PlanTodoCheckView(APIView):
     permission_classes = (IsAuthenticated, )
 
     def get(self, request, plan_id):

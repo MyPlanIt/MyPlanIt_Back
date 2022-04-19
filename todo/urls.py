@@ -9,9 +9,9 @@ urlpatterns = [
     path('todos/plan/<int:todo_id>/detail', views.DetailTodoView.as_view()),  # 투두 세부 정보 조회 기능
 
     # All, Progress, Done
-    path('todos/plan/detail/all/<int:plan_id>', views.PlanDetailAllView.as_view()), # 플랜 상세페에지 중 All 조회 기능
-    path('todos/plan/detail/progress/<int:plan_id>', views.PlanDetailProgressView.as_view()), # 플랜 상세피이지 중 Progress 기능
-    path('todos/plan/detail/done/<int:plan_id>', views.PlanDetailDoneView.as_view()), # 플랜 상세피이지 중 Done 기능
+    path('todos/plan/detail/all/<int:plan_id>', views.PlanDetailAllView.as_view()), # 플랜 상세 페이지 중 All 조회 기능
+    path('todos/plan/detail/uncheck/<int:plan_id>', views.PlanTodoUncheckView.as_view()), # 플랜 상세 페이지 중 Uncheck 기능
+    path('todos/plan/detail/check/<int:plan_id>', views.PlanDetailCheckView.as_view()), # 플랜 상세 페이지 중 Check 기능
 
     # 미루기, 앞당기기
     path('todos/plan/delay/<int:id>', views.PlanTodoDelayView.as_view()), # 플랜투두 미루기

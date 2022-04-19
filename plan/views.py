@@ -39,7 +39,7 @@ class PlanDetailView(APIView):
 
         else:
             return Response({"Plan": serializer.data,
-                             "own_flag": "false"}, status=status.HTTP_200_OK)
+                             "own_flag": False}, status=status.HTTP_200_OK)
 
 
 # 특정 플랜 구매

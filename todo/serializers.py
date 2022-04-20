@@ -93,11 +93,11 @@ class ShowAllDateOfPlanTodosSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User_plan_todo
-        fields = ['id', 'plan_todo', 'date']
+        fields = ['id', 'date']
 
 
 class ShowAllDateOfPersonalTodoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User_personal_todo
-        fields = ['id', 'todo_name', 'date']
+        fields = ['id', 'date']

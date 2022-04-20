@@ -230,36 +230,35 @@ class PlanDetailAllView(APIView):
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# 플랜 상세페이지 중 Progress 부분
-class PlanDetailProgressView(APIView):
+# 플랜 상세 페이지 중 Progress 부분 -> Uncheck로 바뀜
+class PlanTodoUncheckView(APIView):
     permission_classes = (IsAuthenticated, )
 
     def get(self, request, plan_id):
         try:
-            today = datetime.date.today()
-            user_plan_todos = User_plan_todo.objects.filter(user=request.user, plan_id=plan_id, date__range=[today, today+datetime.timedelta(days=365)]).order_by('day') # 해당 플랜의 투두들
+            user_plan_todos = User_plan_todo.objects.filter(user=request.user, plan_id=plan_id, finish_flag=False).order_by('day')
             data = PlanDetailSerializer(user_plan_todos, many=True).data
-            return Response({"data": data}, status=status.HTTP_200_OK)
+            return Response({"Uncheck": data}, status=status.HTTP_200_OK)
+
         except:
-            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "에러가 발생했습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# 플랜 상세페이지 중 Done 부분
-class PlanDetailDoneView(APIView):
+# 플랜 상세 페이지 중 Done 부분 -> Check로 바뀜
+class PlanTodoCheckView(APIView):
     permission_classes = (IsAuthenticated, )
 
     def get(self, request, plan_id):
         try:
-            today = datetime.date.today()
-            user_plan_todos = User_plan_todo.objects.filter(user=request.user, plan_id=plan_id, date__range=[today-datetime.timedelta(days=365), today-datetime.timedelta(days=1)]).order_by('day') # 해당 플랜의 투두들
+            user_plan_todos = User_plan_todo.objects.filter(user=request.user, plan_id=plan_id, finish_flag=True).order_by('day')
             data = PlanDetailSerializer(user_plan_todos, many=True).data
-            return Response({"data": data}, status=status.HTTP_200_OK)
+            return Response({"check": data}, status=status.HTTP_200_OK)
+
         except:
-            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "에러가 발생했습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
 
-## 투두 미루기 & 앞당기기
-
+# 투두 미루기 & 앞당기기
 # 플랜 투두 미루기
 class PlanTodoDelayView(APIView):
     permission_classes = (IsAuthenticated, )

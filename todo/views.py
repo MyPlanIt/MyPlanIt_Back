@@ -310,6 +310,7 @@ class PlanTodoAdvanceView(APIView):
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
 
+# 유저의 전체 투두의 날짜 반환
 class ShowAllTodosView(APIView):
     permission_classes = (IsAuthenticated, )
 

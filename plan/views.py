@@ -206,6 +206,7 @@ class DeletePlanView(APIView):
             return Response({"message": "error"}, status=status.HTTP_202_ACCEPTED)
 
 
+# 플랜 제안하기
 class ProposalView(APIView):
     permission_classes = (IsAuthenticated,)
 

@@ -4,7 +4,9 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from plan.models import Plan, User_Plan, Plan_todo, User_plan_todo, Plan_todo_video
 from .models import User_personal_todo
-from .serializers import UserPlanTodoSerializer, PlanTodoSerializer, TodoMediaSerializer, UserPersonalTodoSerializer, PlanDetailSerializer, PlanDetailSerializer2
+from .serializers import (UserPlanTodoSerializer, PlanTodoSerializer, TodoMediaSerializer, UserPersonalTodoSerializer,
+                          PlanDetailSerializer, PlanDetailSerializer2,
+                          ShowAllDateOfPlanTodosSerializer, ShowAllDateOfPersonalTodoSerializer)
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 import datetime
 
@@ -306,3 +308,20 @@ class PlanTodoAdvanceView(APIView):
             return Response({"message": "success"}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ShowAllTodosView(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request):
+        try:
+            user_plan_todos = User_plan_todo.objects.filter(user=request.user)
+            user_personal_todos = User_personal_todo.objects.filter(user=request.user)
+
+            plan_todos = ShowAllDateOfPlanTodosSerializer(user_plan_todos, many=True).data
+            personal_todos = ShowAllDateOfPersonalTodoSerializer(user_personal_todos, many=True).data
+            return Response({"plan_todos": plan_todos,
+                             "personal_todos": personal_todos}, status=status.HTTP_200_OK)
+
+        except:
+            return Response({"message": "에러가 발생했습니다."}, status=status.HTTP_400_BAD_REQUEST)

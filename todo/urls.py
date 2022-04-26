@@ -22,6 +22,7 @@ urlpatterns = [
     path('todos/my/<int:id>/delete', views.EditMyTodoView.as_view()),  # 개인 투두 삭제 기능
     path('todos/my/<int:id>/edit', views.EditMyTodoView.as_view()),  # 개인 투두 이름 변경(수정) 기능
     path('todos/my/<int:id>/delay', views.DelayMyTodoView.as_view()),  # 개인 투두 미루기 기능
+    path('todos/my/<int:id>/advance', views.AdvanceMyTodoView.as_view()),  # 개인 투두 앞당기기 기능
 
     path('todos/allofdate', views.ShowAllTodosView.as_view())  # 전체 투두 날짜 조회 기능
 ]

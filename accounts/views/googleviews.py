@@ -82,7 +82,13 @@ def google_callback(request, format=None):
 
     user_info = user_info_json.json()
     username = user_info.get('sub')
-    realname = user_info.get('family_name') + user_info.get('given_name')
+
+    if user_info.get('family_name') is None:
+        realname = user_info.get('given_name')
+    elif user_info.get('given_name') is None:
+        realname = user_info.get('family_name')
+    else:
+        realname = user_info.get('family_name') + user_info.get('given_name')
 
     exist_user_flag = User.objects.filter(username=username)
 

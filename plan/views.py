@@ -6,6 +6,7 @@ from .models import Plan, User_Plan, Plan_todo, User_plan_todo, Proposal
 from .serializers import PlanSerializer, PlanDetailSerializer, UserPlanSerializer, RegisteredPlanSerializer, ProposalSerializer
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 import datetime
+from django.utils import timezone
 
 
 # 전체 플랜 조회
@@ -165,7 +166,7 @@ class RegisterPlanView(APIView):
             plan_todos = Plan_todo.objects.filter(plan=plan)
             # date = datetime.date.today()  # 오늘 날짜 가져오기
             for plan_todo in plan_todos:
-                date = datetime.date.today() # 오늘 날짜 가져오기
+                date = timezone.now()  # utc 변경한 부분
                 date += datetime.timedelta(days=plan_todo.date)  # 날짜 + 걸리는 일수에 맞게 db에 넣어주기
                 user_plan_todo = User_plan_todo(user=request.user, plan=plan, plan_todo=plan_todo, date=date, day=plan_todo.date) # day field 추가
                 user_plan_todo.save()

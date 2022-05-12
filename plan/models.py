@@ -1,7 +1,7 @@
 from django.db import models
 from taggit.managers import TaggableManager
 from accounts.models import User
-
+import datetime
 
 CATEGORY_CHOICES = (('Routine', 'Routine'),
                     ('Growth', 'Growth'))
@@ -57,6 +57,9 @@ class User_Plan(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    start_date = models.DateField(default=datetime.date.today())
+    finish_date = models.DateField(default=datetime.date.today())
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE)

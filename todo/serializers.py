@@ -66,9 +66,7 @@ class UserPersonalTodoSerializer(serializers.ModelSerializer):
         fields = ['id', 'todo_name', 'date', 'finish_flag']
 
 
-## 상세페이지 세부
-
-
+# 상세 페이지 세부
 class PlanDetailSerializer(serializers.ModelSerializer):
     plan_todo = serializers.SerializerMethodField()
     plan_todo_id = serializers.SerializerMethodField()
@@ -79,7 +77,27 @@ class PlanDetailSerializer(serializers.ModelSerializer):
     def get_plan_todo(self, obj):
         return obj.plan_todo.name
 
-
     class Meta:
         model = User_plan_todo
         fields = ['day', 'id', 'plan_todo_id', 'plan_todo', 'finish_flag']
+
+
+class PlanDetailSerializer2(serializers.ModelSerializer):
+
+    class Meta:
+        model = Plan_todo
+        fields = ['id', 'date', 'name']
+
+
+class ShowAllDateOfPlanTodosSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User_plan_todo
+        fields = ['id', 'date']
+
+
+class ShowAllDateOfPersonalTodoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User_personal_todo
+        fields = ['id', 'date']

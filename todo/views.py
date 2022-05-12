@@ -4,7 +4,9 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from plan.models import Plan, User_Plan, Plan_todo, User_plan_todo, Plan_todo_video
 from .models import User_personal_todo
-from .serializers import UserPlanTodoSerializer, PlanTodoSerializer, TodoMediaSerializer, UserPersonalTodoSerializer, PlanDetailSerializer
+from .serializers import (UserPlanTodoSerializer, PlanTodoSerializer, TodoMediaSerializer, UserPersonalTodoSerializer,
+                          PlanDetailSerializer, PlanDetailSerializer2,
+                          ShowAllDateOfPlanTodosSerializer, ShowAllDateOfPersonalTodoSerializer)
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 import datetime
 
@@ -17,18 +19,22 @@ class PlanTodoView(APIView):
         User_plan_todo.objects.all().order_by('plan_id', 'plan_todo_id')  # plan의 id값으로 1차 정렬 -> plan_todo_id로 2차 정렬
 
         try:
-            plan_querysets = User_Plan.objects.filter(user=request.user, register_flag=True)  # User_Plan에서 user가 등록한 plans들 가져오기 (register_flag = True)
+            plan_querysets = User_Plan.objects.filter(user=request.user,
+                                                      register_flag=True)  # User_Plan에서 user가 등록한 plans들 가져오기 (register_flag = True)
             data = {}
 
             for plan_queryset in plan_querysets:  # 하나의 플랜에서 플랜 투두들 가져오기 위함
                 plan = plan_queryset.plan  # 플랜 가져오기
-                plan_todo_querysets = User_plan_todo.objects.filter(user=request.user, plan=plan, date=date)  # user_plan_todo모델에서 해당 유저, 해당 날짜, 해당 플랜의 플랜투두들 가져오기
-                if plan_todo_querysets.values().count() != 0: # 오늘 해야 할 투두가 없는 플랜은 제외
-                    serializer = UserPlanTodoSerializer(plan_todo_querysets, many=True)  # serializer를 이용해 plan todo들을 가공된 Json data로 변환
+                plan_todo_querysets = User_plan_todo.objects.filter(user=request.user, plan=plan,
+                                                                    date=date)  # user_plan_todo모델에서 해당 유저, 해당 날짜, 해당 플랜의 플랜투두들 가져오기
+                if plan_todo_querysets.values().count() != 0:  # 오늘 해야 할 투두가 없는 플랜은 제외
+                    serializer = UserPlanTodoSerializer(plan_todo_querysets,
+                                                        many=True)  # serializer를 이용해 plan todo들을 가공된 Json data로 변환
                     rate = plan_queryset.rate  # 플랜의 달성률 가져오기
                     serializer_data = list(serializer.data)
                     serializer_data.insert(0, {'달성률': rate})
-                    data[plan_queryset.plan.name] = serializer_data  # 딕셔너리 형태로 따로 만들기 (key: 플랜 이름, value: [ { 달성률 }, { 플랜투두1 }, { 플랜투두2 }, ... ])
+                    data[
+                        plan_queryset.plan.name] = serializer_data  # 딕셔너리 형태로 따로 만들기 (key: 플랜 이름, value: [ { 달성률 }, { 플랜투두1 }, { 플랜투두2 }, ... ])
 
             return Response(data, status=status.HTTP_200_OK)
 
@@ -74,8 +80,19 @@ class DelayPlanTodoView(APIView):
         try:
             user_plan_todo = get_object_or_404(User_plan_todo, id=id)
             user_plan_todo.date += datetime.timedelta(days=1)  # 플랜 투두 날짜 + 1
-            user_plan_todo.day += 1 # 플랜 투두 일차 + 1
+            user_plan_todo.day += 1  # 플랜 투두 일차 + 1
             user_plan_todo.save()
+
+            # User_Plan 모델에 start_date, finish_date 업데이트
+            plan = user_plan_todo.plan
+            user_plan = User_Plan.objects.get(user=request.user, plan=plan)
+
+            user_plan.start_date = User_plan_todo.objects.filter(user=request.user, plan=plan).order_by(
+                'date').first().date
+            user_plan.finish_date = User_plan_todo.objects.filter(user=request.user, plan=plan).order_by(
+                'date').last().date
+            user_plan.save()
+
             return Response({"message": "success"}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "error"}, status=status.HTTP_400_BAD_REQUEST)
@@ -105,7 +122,8 @@ class DetailTodoView(APIView):
         try:
             plan_todo = get_object_or_404(Plan_todo, id=todo_id)
             if not plan_todo.media_flag:  # 이미지만 있는 경우
-                return Response({"plan_todo_name": plan_todo.name, "image_url": plan_todo.img_url}, status=status.HTTP_200_OK)
+                return Response({"plan_todo_name": plan_todo.name, "image_url": plan_todo.img_url},
+                                status=status.HTTP_200_OK)
             else:
                 media_querysets = Plan_todo_video.objects.filter(plan_todo_id=todo_id)
                 serializer = TodoMediaSerializer(media_querysets, many=True)
@@ -200,62 +218,95 @@ class DelayMyTodoView(APIView):
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
 
-## 상세페이지 세부
-
-# 플랜 상세페이지 중 All 부분
-class PlanDetailAllView(APIView):
-    permission_classes = (IsAuthenticated, )
-
-    def get(self, request, plan_id):
-        try:
-            user_plan_todos = User_plan_todo.objects.filter(user=request.user, plan_id=plan_id).order_by('day')  # 해당 플랜의 투두들
-            user_plan_todos.order_by('plan_todo__date') # 날짜순 정렬
-            data = PlanDetailSerializer(user_plan_todos, many=True).data
-            return Response({"data": data}, status=status.HTTP_200_OK)
-        except:
-            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
-
-
-# 플랜 상세페이지 중 Progress 부분
-class PlanDetailProgressView(APIView):
-    permission_classes = (IsAuthenticated, )
-
-    def get(self, request, plan_id):
-        try:
-            today = datetime.date.today()
-            user_plan_todos = User_plan_todo.objects.filter(user=request.user, plan_id=plan_id, date__range=[today, today+datetime.timedelta(days=365)]).order_by('day') # 해당 플랜의 투두들
-            data = PlanDetailSerializer(user_plan_todos, many=True).data
-            return Response({"data": data}, status=status.HTTP_200_OK)
-        except:
-            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
-
-
-# 플랜 상세페이지 중 Done 부분
-class PlanDetailDoneView(APIView):
-    permission_classes = (IsAuthenticated, )
-
-    def get(self, request, plan_id):
-        try:
-            today = datetime.date.today()
-            user_plan_todos = User_plan_todo.objects.filter(user=request.user, plan_id=plan_id, date__range=[today-datetime.timedelta(days=365), today-datetime.timedelta(days=1)]).order_by('day') # 해당 플랜의 투두들
-            data = PlanDetailSerializer(user_plan_todos, many=True).data
-            return Response({"data": data}, status=status.HTTP_200_OK)
-        except:
-            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
-
-
-## 투두 미루기 & 앞당기기
-
-# 플랜 투두 미루기
-class PlanTodoDelayView(APIView):
-    permission_classes = (IsAuthenticated, )
+# 개인 투두 앞당기기
+class AdvanceMyTodoView(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, id):
         try:
-            user_plan_todo = User_plan_todo.objects.get(id=id) # 해당 유저-플랜-투두
+            user_todo = get_object_or_404(User_personal_todo, user=request.user, id=id)
+            user_todo.date -= datetime.timedelta(days=1)  # 개인 투두 날짜 - 1
+            user_todo.save()
+
+            return Response({"message": "마이 투두를 앞당겼습니다."}, status=status.HTTP_200_OK)
+        except:
+            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+## 상세페이지 세부
+# 플랜 상세페이지 중 All 부분
+class PlanDetailAllView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, plan_id):
+        try:
+            if User_Plan.objects.get(user=request.user, plan_id=plan_id).register_flag == True:
+                user_plan_todos = User_plan_todo.objects.filter(user=request.user, plan_id=plan_id).order_by(
+                    'day')  # 해당 플랜의 투두들
+                user_plan_todos.order_by('plan_todo__date')  # 날짜순 정렬
+                data = PlanDetailSerializer(user_plan_todos, many=True).data
+                return Response({"data": data}, status=status.HTTP_200_OK)
+            else:
+                plan_todos = Plan_todo.objects.filter(plan_id=plan_id)
+                data = PlanDetailSerializer2(plan_todos, many=True).data
+                return Response({"data": data}, status=status.HTTP_200_OK)
+        except:
+            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 플랜 상세 페이지 중 Progress 부분 -> Uncheck로 바뀜
+class PlanTodoUncheckView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, plan_id):
+        try:
+            user_plan_todos = User_plan_todo.objects.filter(user=request.user, plan_id=plan_id,
+                                                            finish_flag=False).order_by('day')
+            data = PlanDetailSerializer(user_plan_todos, many=True).data
+            return Response({"Uncheck": data}, status=status.HTTP_200_OK)
+
+        except:
+            return Response({"message": "에러가 발생했습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 플랜 상세 페이지 중 Done 부분 -> Check로 바뀜
+class PlanTodoCheckView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, plan_id):
+        try:
+            user_plan_todos = User_plan_todo.objects.filter(user=request.user, plan_id=plan_id,
+                                                            finish_flag=True).order_by('day')
+            data = PlanDetailSerializer(user_plan_todos, many=True).data
+            return Response({"check": data}, status=status.HTTP_200_OK)
+
+        except:
+            return Response({"message": "에러가 발생했습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 투두 미루기 & 앞당기기
+# 플랜 투두 미루기
+class PlanTodoDelayView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, id):
+        try:
+            user_plan_todo = User_plan_todo.objects.get(id=id)  # 해당 유저-플랜-투두
             user_plan_todo.day += 1
+            print(user_plan_todo.day)
             user_plan_todo.date += datetime.timedelta(days=1)
             user_plan_todo.save()
+
+            # User_Plan 모델에 start_date, finish_date 업데이트
+            plan = user_plan_todo.plan
+            user_plan = User_Plan.objects.get(user=request.user, plan=plan)
+
+            user_plan.start_date = User_plan_todo.objects.filter(user=request.user, plan=plan).order_by(
+                'date').first().date
+            user_plan.finish_date = User_plan_todo.objects.filter(user=request.user, plan=plan).order_by(
+                'date').last().date
+            user_plan.save()
+
             return Response({"message": "success"}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
@@ -263,14 +314,43 @@ class PlanTodoDelayView(APIView):
 
 # 플랜 투두 앞당기기
 class PlanTodoAdvanceView(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, id):
         try:
-            user_plan_todo = User_plan_todo.objects.get(id=id) # 해당 유저-플랜-투두
+            user_plan_todo = User_plan_todo.objects.get(id=id)  # 해당 유저-플랜-투두
             user_plan_todo.day -= 1
             user_plan_todo.date -= datetime.timedelta(days=1)
             user_plan_todo.save()
+
+            # User_Plan 모델에 start_date, finish_date 업데이트
+            plan = user_plan_todo.plan
+            user_plan = User_Plan.objects.get(user=request.user, plan=plan)
+
+            user_plan.start_date = User_plan_todo.objects.filter(user=request.user, plan=plan).order_by(
+                'date').first().date
+            user_plan.finish_date = User_plan_todo.objects.filter(user=request.user, plan=plan).order_by(
+                'date').last().date
+            user_plan.save()
+
             return Response({"message": "success"}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 유저의 전체 투두의 날짜 반환
+class ShowAllTodosView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        try:
+            user_plan_todos = User_plan_todo.objects.filter(user=request.user)
+            user_personal_todos = User_personal_todo.objects.filter(user=request.user)
+
+            plan_todos = ShowAllDateOfPlanTodosSerializer(user_plan_todos, many=True).data
+            personal_todos = ShowAllDateOfPersonalTodoSerializer(user_personal_todos, many=True).data
+            return Response({"plan_todos": plan_todos,
+                             "personal_todos": personal_todos}, status=status.HTTP_200_OK)
+
+        except:
+            return Response({"message": "에러가 발생했습니다."}, status=status.HTTP_400_BAD_REQUEST)

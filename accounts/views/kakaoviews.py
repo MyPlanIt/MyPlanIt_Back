@@ -27,7 +27,7 @@ def get_tokens_for_user(user):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def kakao_login(request):
-    app_rest_api_key = "41a2c19cd51500b22e399c7019defd4c"
+    app_rest_api_key = env('kakao_rest_api_key')
     redirect_uri = "https://myplanit.link/login/kakao/callback"
     return redirect(
         f"https://kauth.kakao.com/oauth/authorize?client_id={app_rest_api_key}&redirect_uri={redirect_uri}&response_type=code"
@@ -117,7 +117,7 @@ def login(request, format=None):
 
 # 로그아웃 -> 사용자의 access_token, refresh_token 모두 만료시킴
 def kakao_logout(request):
-    access = "2zqeoqTJQ-u-a1SiB1ga2SnPv2LIX8OiSQ5oego9cxgAAAF_LK3m6g"
+    access = ""  # kakao access_token
     data = requests.post(
         "https://kapi.kakao.com/v1/user/logout",
         headers={"Authorization": f"Bearer {access}"},
@@ -128,7 +128,7 @@ def kakao_logout(request):
 
 # 연결 끊기 -> 사용자와 앱의 연결을 해제(카카오 로그인을 통해 서비스에 가입한 사용자가 탈퇴하거나, 카카오 로그인 연동 해제를 요청할 경우)
 def kakao_resign(request):
-    access = "eGF4UFcPyV47RB1LNwEHU8vI5Z2EdYHbk1-p1AopcFEAAAF_LNv1Ag"
+    access = ""  # kakao access token
     data = requests.post("https://kapi.kakao.com/v1/user/unlink",
                          headers={"Authorization": f"Bearer {access}"},
                          )

@@ -108,17 +108,20 @@ class UnregisterView(APIView):
     permission_classes = (IsAuthenticated, )
 
     def post(self, request):
-        user = request.user
-        # user_plan , user_plan_todo 중개모델 데이터 삭제
-        user_plan_todos = User_plan_todo.objects.filter(user_id=user.id)
-        user_plan_todos.delete()
-        user_plans = User_Plan.objects.filter(user_id=user.id)
-        user_plans.delete()
+        try:
+            user = request.user
+            # user_plan , user_plan_todo 중개모델 데이터 삭제
+            user_plan_todos = User_plan_todo.objects.filter(user_id=user.id)
+            user_plan_todos.delete()
+            user_plans = User_Plan.objects.filter(user_id=user.id)
+            user_plans.delete()
 
-        # user_personal_todo 데이터 삭제
-        user_personal_todos = User_personal_todo.objects.filter(user_id=user.id)
-        user_personal_todos.delete()
+            # user_personal_todo 데이터 삭제
+            user_personal_todos = User_personal_todo.objects.filter(user_id=user.id)
+            user_personal_todos.delete()
 
-        # user 데이터 삭제
-        user.delete()
-        return Response({"message": "탈퇴 완료"}, status=status.HTTP_200_OK)
+            # user 데이터 삭제
+            user.delete()
+            return Response({"message": "회원 탈퇴가 완료되었습니다."}, status=status.HTTP_200_OK)
+        except:
+            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)

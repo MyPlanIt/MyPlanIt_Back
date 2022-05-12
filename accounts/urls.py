@@ -28,4 +28,7 @@ urlpatterns = [
 
     # 관리자 인증
     path('manager', kakaoviews.login, name='login'),
+
+    # 회원 탈퇴
+    path('unregister', views.UnregisterView.as_view(), name='unregister'),
 ]

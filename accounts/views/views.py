@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import authenticate, get_user_model
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from django.contrib.auth.models import update_last_login
 from plan.models import User_Plan, User_plan_todo
 from todo.models import User_personal_todo
@@ -105,7 +105,7 @@ class OnboardingView(APIView):
 
 # 회원 탈퇴하기
 class UnregisterView(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticatedOrReadOnly, )
 
     def post(self, request):
         try:

@@ -105,6 +105,7 @@ class OnboardingView(APIView):
 
 # 회원 탈퇴하기
 class UnregisterView(APIView):
+    permission_classes = (AllowAny, )
 
     def post(self, request):
         try:

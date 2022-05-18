@@ -105,7 +105,6 @@ class OnboardingView(APIView):
 
 # 회원 탈퇴하기
 class UnregisterView(APIView):
-    permission_classes = (IsAuthenticatedOrReadOnly, )
 
     def post(self, request):
         try:

@@ -105,9 +105,9 @@ class OnboardingView(APIView):
 
 # 회원 탈퇴하기
 class UnregisterView(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAuthenticated, )
 
-    def post(self, request):
+    def delete(self, request):
         try:
             # user = request.user
             # # user_plan , user_plan_todo 중개모델 데이터 삭제

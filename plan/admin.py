@@ -41,4 +41,4 @@ class User_plan_todoAdmin(admin.ModelAdmin):
 
 @admin.register(Proposal)
 class User_ProposalAdmin(admin.ModelAdmin):
-    list_display = ['user', 'proposal']
+    list_display = ['proposal']

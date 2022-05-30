@@ -208,7 +208,7 @@ class DeletePlanView(APIView):
 
 # 플랜 제안하기
 class ProposalView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def get(self, request):
         try:
@@ -220,7 +220,7 @@ class ProposalView(APIView):
 
     def post(self, request):
         try:
-            proposal = Proposal.objects.create(user=request.user, proposal=request.data['proposal'])
+            proposal = Proposal.objects.create(proposal=request.data['proposal'])
             proposal.save()
 
             return Response({"message": "요청이 전달되었습니다."}, status=status.HTTP_200_OK)

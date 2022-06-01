@@ -43,7 +43,6 @@ class RegisteredPlanSerializer(serializers.ModelSerializer):
 
 
 class ProposalSerializer(serializers.ModelSerializer):
-    user = UserProposalSerializer()
 
     class Meta:
         model = Proposal

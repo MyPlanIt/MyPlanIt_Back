@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import authenticate, get_user_model
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from django.contrib.auth.models import update_last_login
 from plan.models import User_Plan, User_plan_todo
 from todo.models import User_personal_todo
@@ -107,7 +107,7 @@ class OnboardingView(APIView):
 class UnregisterView(APIView):
     permission_classes = (IsAuthenticated, )
 
-    def post(self, request):
+    def delete(self, request):
         try:
             user = request.user
             # user_plan , user_plan_todo 중개모델 데이터 삭제
@@ -121,7 +121,7 @@ class UnregisterView(APIView):
             user_personal_todos.delete()
 
             # user 데이터 삭제
-            user.delete()
+            request.user.delete()
             return Response({"message": "회원 탈퇴가 완료되었습니다."}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)

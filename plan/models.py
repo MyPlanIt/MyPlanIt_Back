@@ -25,7 +25,6 @@ class Plan(models.Model):
 
 class Proposal(models.Model):
     proposal = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Plan_todo(models.Model):

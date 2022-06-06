@@ -3,8 +3,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import authenticate, get_user_model
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from django.contrib.auth.models import update_last_login
+from plan.models import User_Plan, User_plan_todo
+from todo.models import User_personal_todo
 
 User = get_user_model()
 
@@ -97,5 +99,29 @@ class OnboardingView(APIView):
             user.save()
             return Response({"message": "success"}, status=status.HTTP_200_OK)
 
+        except:
+            return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 회원 탈퇴하기
+class UnregisterView(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def delete(self, request):
+        try:
+            user = request.user
+            # user_plan , user_plan_todo 중개모델 데이터 삭제
+            user_plan_todos = User_plan_todo.objects.filter(user_id=user.id)
+            user_plan_todos.delete()
+            user_plans = User_Plan.objects.filter(user_id=user.id)
+            user_plans.delete()
+
+            # user_personal_todo 데이터 삭제
+            user_personal_todos = User_personal_todo.objects.filter(user_id=user.id)
+            user_personal_todos.delete()
+
+            # user 데이터 삭제
+            request.user.delete()
+            return Response({"message": "회원 탈퇴가 완료되었습니다."}, status=status.HTTP_200_OK)
         except:
             return Response({"message": "로그인이 만료되었습니다."}, status=status.HTTP_400_BAD_REQUEST)

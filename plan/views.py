@@ -160,8 +160,8 @@ class RegisterPlanView(APIView):
             plan = get_object_or_404(Plan, id=pk)
             user_plan = get_object_or_404(User_Plan, user=request.user, plan=plan)
 
-            if user_plan.register_flag:  # 이미 등록한 플랜인 경우
-                return Response({"message": "이미 등록한 플랜입니다."}, status=status.HTTP_202_ACCEPTED)
+            # if user_plan.register_flag:  # 이미 등록한 플랜인 경우
+            #     return Response({"message": "이미 등록한 플랜입니다."}, status=status.HTTP_202_ACCEPTED)
 
             plan_todos = Plan_todo.objects.filter(plan=plan)
             # date = datetime.date.today()  # 오늘 날짜 가져오기

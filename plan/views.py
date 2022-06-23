@@ -50,15 +50,15 @@ class BuyPlanView(APIView):
     def post(self, request, pk):
         try:
             plan = get_object_or_404(Plan, id=pk)
-            user_own_plan = User_Plan.objects.filter(user=request.user).filter(plan=plan).filter(own_flag=True)
+            # user_own_plan = User_Plan.objects.filter(user=request.user).filter(plan=plan).filter(own_flag=True)
             user_plan = User_Plan.objects.filter(user=request.user).filter(plan=plan)
 
-            if user_own_plan.exists():
+            if user_plan.exists():
                 return Response({"message": "이미 구매한 플랜입니다."}, status=status.HTTP_208_ALREADY_REPORTED)
 
-            elif user_plan.exists():
-                user_plan.update(own_flag=True)
-                return Response({"message": "구매 완료"}, status=status.HTTP_200_OK)
+            # elif user_plan.exists():
+            #     user_plan.update(own_flag=True)
+            #     return Response({"message": "구매 완료"}, status=status.HTTP_200_OK)
 
             else:
                 new = User_Plan.objects.create(user=request.user, plan=plan, own_flag=True)
@@ -170,6 +170,7 @@ class RegisterPlanView(APIView):
                 date += datetime.timedelta(days=plan_todo.date)  # 날짜 + 걸리는 일수에 맞게 db에 넣어주기
                 user_plan_todo = User_plan_todo(user=request.user, plan=plan, plan_todo=plan_todo, date=date, day=plan_todo.date) # day field 추가
                 user_plan_todo.save()
+
             user_plan.register_flag = True  # 등록 flag = True 로 변경
             user_plan.save()
 

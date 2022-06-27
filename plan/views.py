@@ -109,28 +109,7 @@ class TodoChallengeView(APIView):
                 user_plan.finish_date = User_plan_todo.objects.filter(user=request.user, plan=plan).last().date
                 user_plan.save()
 
-            # 등록이 안 된 버그때문에 추가한 코드
-            if user_plan.register_flag == False:
-                plan_todos = Plan_todo.objects.filter(plan=plan)
-
-                for plan_todo in plan_todos:
-                    date = timezone.now()  # utc 변경한 부분
-                    date += datetime.timedelta(days=plan_todo.date)  # 날짜 + 걸리는 일수에 맞게 db에 넣어주기
-                    user_plan_todo = User_plan_todo(user=request.user, plan=plan, plan_todo=plan_todo, date=date,
-                                                    day=plan_todo.date)  # day field 추가
-                    user_plan_todo.save()
-
-                user_plan.register_flag = True
-                user_plan.save()
-
-                # User_Plan 모델에 start_date, finish_date 추가
-                user_plan = User_Plan.objects.get(user=request.user, plan=plan)
-
-                user_plan.start_date = User_plan_todo.objects.filter(user=request.user, plan=plan).first().date
-                user_plan.finish_date = User_plan_todo.objects.filter(user=request.user, plan=plan).last().date
-                user_plan.save()
-
-            return Response({"message": "등록 완료"}, status=status.HTTP_200_OK)
+                return Response({"message": "등록 완료"}, status=status.HTTP_200_OK)
 
         except:
             return Response({"message": "로그인이 만료되었습니다"}, status=status.HTTP_400_BAD_REQUEST)

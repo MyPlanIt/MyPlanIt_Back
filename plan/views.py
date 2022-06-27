@@ -84,7 +84,6 @@ class TodoChallengeView(APIView):
             #     return Response({"message": "이미 구매한 플랜입니다."}, status=status.HTTP_208_ALREADY_REPORTED)
 
             if user_plan.exists():
-                print("1")
                 return Response({"message": "이미 구매한 플랜입니다."}, status=status.HTTP_200_OK)
 
             else:
@@ -101,10 +100,10 @@ class TodoChallengeView(APIView):
                     user_plan_todo.save()
 
                 user_plan.register_flag = True  # 등록 flag = True 로 변경
-                user_plan.save()
+                # user_plan.save()
 
                 # User_Plan 모델에 start_date, finish_date 추가
-                user_plan = User_Plan.objects.get(user=request.user, plan=plan)
+                # user_plan = User_Plan.objects.get(user=request.user, plan=plan)
 
                 user_plan.start_date = User_plan_todo.objects.filter(user=request.user, plan=plan).first().date
                 user_plan.finish_date = User_plan_todo.objects.filter(user=request.user, plan=plan).last().date

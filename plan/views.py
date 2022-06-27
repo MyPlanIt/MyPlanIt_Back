@@ -100,10 +100,10 @@ class TodoChallengeView(APIView):
                     user_plan_todo.save()
 
                 user_plan.register_flag = True  # 등록 flag = True 로 변경
-                # user_plan.save()
+                user_plan.save()
 
                 # User_Plan 모델에 start_date, finish_date 추가
-                # user_plan = User_Plan.objects.get(user=request.user, plan=plan)
+                user_plan = User_Plan.objects.get(user=request.user, plan=plan)
 
                 user_plan.start_date = User_plan_todo.objects.filter(user=request.user, plan=plan).first().date
                 user_plan.finish_date = User_plan_todo.objects.filter(user=request.user, plan=plan).last().date
@@ -121,6 +121,7 @@ class TodoChallengeView(APIView):
                     user_plan_todo.save()
 
                 user_plan.register_flag = True
+                user_plan.save()
 
                 # User_Plan 모델에 start_date, finish_date 추가
                 user_plan = User_Plan.objects.get(user=request.user, plan=plan)

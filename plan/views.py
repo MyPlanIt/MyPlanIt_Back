@@ -77,15 +77,14 @@ class TodoChallengeView(APIView):
     def post(self, request, pk):
         try:
             plan = get_object_or_404(Plan, id=pk)
-            user_own_plan = User_Plan.objects.filter(user=request.user).filter(plan=plan).filter(own_flag=True)
+            # user_own_plan = User_Plan.objects.filter(user=request.user).filter(plan=plan).filter(own_flag=True)
             user_plan = User_Plan.objects.filter(user=request.user).filter(plan=plan)
 
-            if user_own_plan.exists():
-                return Response({"message": "이미 구매한 플랜입니다."}, status=status.HTTP_208_ALREADY_REPORTED)
+            # if user_own_plan.exists():
+            #     return Response({"message": "이미 구매한 플랜입니다."}, status=status.HTTP_208_ALREADY_REPORTED)
 
-            elif user_plan.exists():
-                user_plan.update(own_flag=True)
-                return Response({"message": "구매 완료"}, status=status.HTTP_200_OK)
+            if user_plan.exists():
+                return Response({"message": "이미 구매한 플랜입니다."}, status=status.HTTP_200_OK)
 
             else:
                 user_plan = User_Plan.objects.create(user=request.user, plan=plan, own_flag=True)

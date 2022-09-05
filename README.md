@@ -84,6 +84,10 @@ MyPlanIt_Back
 #### [🔗 Related issues](https://github.com/MyPlanIt/MyPlanIt_Back/issues/5)
 
 
+<img width="842" alt="image" src="https://user-images.githubusercontent.com/71487608/188447798-5aa02086-eee9-44ff-92eb-ac28bc5c04bf.png">
+#### [🔗 Related issues](https://github.com/MyPlanIt/MyPlanIt_Back/issues/81)
+
+
 ## 🌒 ERD
 
 ![img/erd.png](img/erd.png)
